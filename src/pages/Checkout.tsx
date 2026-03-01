@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
 
 const Checkout = () => {
   const { user } = useAuth();
@@ -20,7 +20,7 @@ const Checkout = () => {
     address: "",
     city: "Nairobi",
     notes: "",
-    paymentMethod: "cod" as "cod" | "mpesa",
+    paymentMethod: "pesapal" as "cod" | "pesapal",
   });
 
   if (!user) {
@@ -54,6 +54,7 @@ const Checkout = () => {
     if (!form.phone || !form.address) { toast.error("Please fill in delivery details"); return; }
     setLoading(true);
 
+    // Create order in database
     const { data: order, error: orderError } = await supabase.from("orders").insert({
       user_id: user.id,
       total: grandTotal,
@@ -78,6 +79,41 @@ const Checkout = () => {
     const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
     if (itemsError) { toast.error("Failed to save order items"); setLoading(false); return; }
 
+    if (form.paymentMethod === "pesapal") {
+      // Initiate Pesapal payment
+      try {
+        const callbackUrl = `${window.location.origin}/payment-callback`;
+        const { data: pesapalData, error: pesapalError } = await supabase.functions.invoke("pesapal-payment", {
+          body: {
+            orderId: order.id,
+            amount: grandTotal,
+            phone: form.phone,
+            email: user.email,
+            firstName: user.user_metadata?.full_name?.split(" ")[0] || "",
+            lastName: user.user_metadata?.full_name?.split(" ").slice(1).join(" ") || "",
+            callbackUrl,
+          },
+        });
+
+        if (pesapalError || !pesapalData?.redirect_url) {
+          toast.error("Failed to initiate payment. Try Cash on Delivery.");
+          setLoading(false);
+          return;
+        }
+
+        await clearCart();
+        // Redirect to Pesapal payment page
+        window.location.href = pesapalData.redirect_url;
+        return;
+      } catch (err) {
+        console.error("Pesapal error:", err);
+        toast.error("Payment service unavailable. Try Cash on Delivery.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Cash on delivery flow
     await clearCart();
     setSuccess(true);
     setLoading(false);
@@ -90,7 +126,7 @@ const Checkout = () => {
       `Order #${order.id.slice(0, 8)}\n` +
       `Items: ${orderSummary}\n` +
       `Total: KES ${grandTotal.toLocaleString()}\n` +
-      `Payment: ${form.paymentMethod === "cod" ? "Cash on Delivery" : "M-Pesa"}\n` +
+      `Payment: Cash on Delivery\n` +
       `📍 ${form.address}, ${form.city}\n` +
       `📞 ${form.phone}\n\n` +
       `Thank you for your order! We'll process it shortly.`
@@ -149,15 +185,22 @@ const Checkout = () => {
           {/* Payment */}
           <div className="bg-card rounded-xl border border-border p-6 space-y-3">
             <h2 className="font-display font-semibold text-foreground">Payment Method</h2>
-            {(["cod", "mpesa"] as const).map(method => (
-              <label key={method} className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${form.paymentMethod === method ? "border-primary bg-primary/5" : "border-border"}`}>
-                <input type="radio" name="payment" checked={form.paymentMethod === method} onChange={() => setForm({ ...form, paymentMethod: method })} className="accent-[hsl(var(--primary))]" />
-                <div>
-                  <p className="font-body font-medium text-sm text-foreground">{method === "cod" ? "Cash on Delivery" : "M-Pesa"}</p>
-                  <p className="font-body text-xs text-muted-foreground">{method === "cod" ? "Pay when your order arrives" : "Pay via M-Pesa STK Push"}</p>
-                </div>
-              </label>
-            ))}
+            
+            <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${form.paymentMethod === "pesapal" ? "border-primary bg-primary/5" : "border-border"}`}>
+              <input type="radio" name="payment" checked={form.paymentMethod === "pesapal"} onChange={() => setForm({ ...form, paymentMethod: "pesapal" })} className="accent-[hsl(var(--primary))]" />
+              <div>
+                <p className="font-body font-medium text-sm text-foreground">Pay Online (Pesapal)</p>
+                <p className="font-body text-xs text-muted-foreground">M-Pesa, Visa, Mastercard, Airtel Money</p>
+              </div>
+            </label>
+
+            <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${form.paymentMethod === "cod" ? "border-primary bg-primary/5" : "border-border"}`}>
+              <input type="radio" name="payment" checked={form.paymentMethod === "cod"} onChange={() => setForm({ ...form, paymentMethod: "cod" })} className="accent-[hsl(var(--primary))]" />
+              <div>
+                <p className="font-body font-medium text-sm text-foreground">Cash on Delivery</p>
+                <p className="font-body text-xs text-muted-foreground">Pay when your order arrives</p>
+              </div>
+            </label>
           </div>
 
           {/* Summary */}
@@ -180,7 +223,13 @@ const Checkout = () => {
           </div>
 
           <Button type="submit" disabled={loading} className="w-full gradient-brand text-primary-foreground rounded-xl font-body font-semibold py-3 text-base">
-            {loading ? "Placing Order..." : `Place Order · ${formatPrice(grandTotal)}`}
+            {loading ? (
+              <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Processing...</span>
+            ) : form.paymentMethod === "pesapal" ? (
+              `Pay ${formatPrice(grandTotal)}`
+            ) : (
+              `Place Order · ${formatPrice(grandTotal)}`
+            )}
           </Button>
         </form>
       </div>
