@@ -237,7 +237,56 @@ const AdminProducts = () => {
                     <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.sizes.join(", ")}</p>
                   )}
                 </div>
-                <div><Label>Colors (comma-separated)</Label><Input value={form.colors.join(", ")} onChange={(e) => setForm({ ...form, colors: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} placeholder="Black, Red, White" /></div>
+                <div>
+                  <Label>Colors</Label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {[
+                      { name: "Black", hex: "#000000" },
+                      { name: "White", hex: "#FFFFFF" },
+                      { name: "Red", hex: "#EF4444" },
+                      { name: "Pink", hex: "#EC4899" },
+                      { name: "Blue", hex: "#3B82F6" },
+                      { name: "Navy", hex: "#1E3A5F" },
+                      { name: "Brown", hex: "#92400E" },
+                      { name: "Tan", hex: "#D2B48C" },
+                      { name: "Beige", hex: "#F5F5DC" },
+                      { name: "Gold", hex: "#D4AF37" },
+                      { name: "Silver", hex: "#C0C0C0" },
+                      { name: "Green", hex: "#22C55E" },
+                      { name: "Purple", hex: "#A855F7" },
+                      { name: "Orange", hex: "#F97316" },
+                      { name: "Nude", hex: "#E8C4A0" },
+                      { name: "Maroon", hex: "#800000" },
+                    ].map((c) => (
+                      <button
+                        key={c.name}
+                        type="button"
+                        onClick={() => {
+                          setForm((prev) => ({
+                            ...prev,
+                            colors: prev.colors.includes(c.name)
+                              ? prev.colors.filter((x) => x !== c.name)
+                              : [...prev.colors, c.name],
+                          }));
+                        }}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${
+                          form.colors.includes(c.name)
+                            ? "border-primary bg-primary/10 text-foreground ring-1 ring-primary"
+                            : "border-border text-muted-foreground hover:border-primary"
+                        }`}
+                      >
+                        <span
+                          className="w-4 h-4 rounded-full shrink-0 border border-border"
+                          style={{ backgroundColor: c.hex }}
+                        />
+                        {c.name}
+                      </button>
+                    ))}
+                  </div>
+                  {form.colors.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.colors.join(", ")}</p>
+                  )}
+                </div>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.in_stock} onChange={(e) => setForm({ ...form, in_stock: e.target.checked })} /> In Stock</label>
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_new} onChange={(e) => setForm({ ...form, is_new: e.target.checked })} /> New</label>
