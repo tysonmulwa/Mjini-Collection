@@ -22,7 +22,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
       <div className="bg-foreground text-primary-foreground text-xs py-1.5">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <span className="font-body">Free delivery in Nairobi for orders over KES 3,000</span>
-          <span className="hidden sm:block font-body">📞 +254 700 123 456</span>
+          <span className="hidden sm:block font-body">📞 +254 703 739 265</span>
         </div>
       </div>
 
