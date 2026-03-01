@@ -13,6 +13,8 @@ import ResetPassword from "./pages/ResetPassword";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
+import Account from "./pages/Account";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -38,6 +40,8 @@ const App = () => (
               <Route path="/product/:id" element={<ProductDetail />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/account" element={<Account />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="products" element={<AdminProducts />} />

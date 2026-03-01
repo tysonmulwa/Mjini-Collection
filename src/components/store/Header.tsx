@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart, Menu, User, X, LogOut } from "lucide-react";
+import { Search, ShoppingCart, Heart, Menu, User, X, LogOut, Package, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -59,9 +59,18 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               </Button>
             </Link>
             {user ? (
-              <Button variant="ghost" size="sm" onClick={signOut} className="hidden sm:flex gap-1.5 text-muted-foreground hover:text-foreground font-body text-sm">
-                <LogOut className="w-4 h-4" /> Sign Out
-              </Button>
+              <div className="hidden sm:flex items-center gap-1">
+                <Link to="/orders">
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+                    <Package className="w-5 h-5" />
+                  </Button>
+                </Link>
+                <Link to="/account">
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+                    <UserCircle className="w-5 h-5" />
+                  </Button>
+                </Link>
+              </div>
             ) : (
               <Link to="/login">
                 <Button variant="ghost" size="sm" className="hidden sm:flex gap-1.5 text-muted-foreground hover:text-foreground font-body text-sm">
@@ -79,9 +88,21 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               <Input placeholder="Search products..." value={searchQuery} onChange={(e) => onSearchChange(e.target.value)} className="pl-10 bg-secondary border-0 rounded-full font-body" />
             </div>
             {user ? (
-              <Button variant="ghost" onClick={signOut} className="w-full justify-start text-muted-foreground font-body text-sm">
-                <LogOut className="w-4 h-4 mr-2" /> Sign Out
-              </Button>
+              <div className="space-y-1">
+                <Link to="/orders" className="block">
+                  <Button variant="ghost" className="w-full justify-start text-muted-foreground font-body text-sm">
+                    <Package className="w-4 h-4 mr-2" /> My Orders
+                  </Button>
+                </Link>
+                <Link to="/account" className="block">
+                  <Button variant="ghost" className="w-full justify-start text-muted-foreground font-body text-sm">
+                    <UserCircle className="w-4 h-4 mr-2" /> My Account
+                  </Button>
+                </Link>
+                <Button variant="ghost" onClick={signOut} className="w-full justify-start text-muted-foreground font-body text-sm">
+                  <LogOut className="w-4 h-4 mr-2" /> Sign Out
+                </Button>
+              </div>
             ) : (
               <Link to="/login" className="block">
                 <Button variant="ghost" className="w-full justify-start text-muted-foreground font-body text-sm">
