@@ -182,7 +182,61 @@ const AdminProducts = () => {
                   {uploading && <p className="text-xs text-muted-foreground mt-1">Uploading image...</p>}
                 </div>
                 <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} /></div>
-                <div><Label>Sizes (comma-separated)</Label><Input value={form.sizes.join(", ")} onChange={(e) => setForm({ ...form, sizes: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} placeholder="36, 37, 38, 39" /></div>
+                <div>
+                  <Label>Sizes</Label>
+                  {form.category === "shoes" ? (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {["35", "36", "37", "38", "39", "40", "41", "42", "43", "44"].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => {
+                            setForm((prev) => ({
+                              ...prev,
+                              sizes: prev.sizes.includes(s)
+                                ? prev.sizes.filter((x) => x !== s)
+                                : [...prev.sizes, s],
+                            }));
+                          }}
+                          className={`px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${
+                            form.sizes.includes(s)
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border text-foreground hover:border-primary"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {["S", "M", "L", "XL", "One Size"].map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => {
+                            setForm((prev) => ({
+                              ...prev,
+                              sizes: prev.sizes.includes(s)
+                                ? prev.sizes.filter((x) => x !== s)
+                                : [...prev.sizes, s],
+                            }));
+                          }}
+                          className={`px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${
+                            form.sizes.includes(s)
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border text-foreground hover:border-primary"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {form.sizes.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.sizes.join(", ")}</p>
+                  )}
+                </div>
                 <div><Label>Colors (comma-separated)</Label><Input value={form.colors.join(", ")} onChange={(e) => setForm({ ...form, colors: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} placeholder="Black, Red, White" /></div>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.in_stock} onChange={(e) => setForm({ ...form, in_stock: e.target.checked })} /> In Stock</label>
