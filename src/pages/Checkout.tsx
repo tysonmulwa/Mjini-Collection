@@ -1,0 +1,173 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { ArrowLeft, CheckCircle } from "lucide-react";
+
+const Checkout = () => {
+  const { user } = useAuth();
+  const { items, total, clearCart } = useCart();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [form, setForm] = useState({
+    phone: "",
+    address: "",
+    city: "Nairobi",
+    notes: "",
+    paymentMethod: "cod" as "cod" | "mpesa",
+  });
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-muted-foreground font-body mb-4">Please sign in to checkout</p>
+          <Link to="/login"><Button className="gradient-brand text-primary-foreground rounded-xl font-body">Sign In</Button></Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (items.length === 0 && !success) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center">
+          <p className="text-muted-foreground font-body mb-4">Your cart is empty</p>
+          <Link to="/"><Button className="gradient-brand text-primary-foreground rounded-xl font-body">Shop Now</Button></Link>
+        </div>
+      </div>
+    );
+  }
+
+  const deliveryFee = total >= 3000 ? 0 : 300;
+  const grandTotal = total + deliveryFee;
+  const formatPrice = (price: number) => `KES ${price.toLocaleString()}`;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.phone || !form.address) { toast.error("Please fill in delivery details"); return; }
+    setLoading(true);
+
+    const { data: order, error: orderError } = await supabase.from("orders").insert({
+      user_id: user.id,
+      total: grandTotal,
+      payment_method: form.paymentMethod,
+      delivery_address: form.address,
+      delivery_city: form.city,
+      phone: form.phone,
+      notes: form.notes,
+    }).select().single();
+
+    if (orderError || !order) { toast.error("Failed to place order"); setLoading(false); return; }
+
+    const orderItems = items.map(item => ({
+      order_id: order.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      price: item.product.price,
+      size: item.size,
+      color: item.color,
+    }));
+
+    const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
+    if (itemsError) { toast.error("Failed to save order items"); setLoading(false); return; }
+
+    await clearCart();
+    setSuccess(true);
+    setLoading(false);
+    toast.success("Order placed successfully!");
+  };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />
+          <h1 className="text-2xl font-display font-bold text-foreground mb-2">Order Placed!</h1>
+          <p className="text-muted-foreground font-body mb-6">Thank you for shopping with Mjini Collections. We'll contact you on {form.phone} with delivery updates.</p>
+          <Link to="/"><Button className="gradient-brand text-primary-foreground rounded-xl font-body">Continue Shopping</Button></Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6 max-w-2xl">
+        <Link to="/cart" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground font-body mb-6">
+          <ArrowLeft className="w-4 h-4" /> Back to bag
+        </Link>
+
+        <h1 className="text-2xl font-display font-bold text-foreground mb-6">Checkout</h1>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Delivery Details */}
+          <div className="bg-card rounded-xl border border-border p-6 space-y-4">
+            <h2 className="font-display font-semibold text-foreground">Delivery Details</h2>
+            <div>
+              <Label className="font-body text-sm">Phone Number</Label>
+              <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} required placeholder="+254 7XX XXX XXX" className="font-body mt-1" />
+            </div>
+            <div>
+              <Label className="font-body text-sm">Delivery Address</Label>
+              <Input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} required placeholder="Street, building, apartment" className="font-body mt-1" />
+            </div>
+            <div>
+              <Label className="font-body text-sm">City</Label>
+              <Input value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} className="font-body mt-1" />
+            </div>
+            <div>
+              <Label className="font-body text-sm">Notes (optional)</Label>
+              <Input value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} placeholder="Delivery instructions" className="font-body mt-1" />
+            </div>
+          </div>
+
+          {/* Payment */}
+          <div className="bg-card rounded-xl border border-border p-6 space-y-3">
+            <h2 className="font-display font-semibold text-foreground">Payment Method</h2>
+            {(["cod", "mpesa"] as const).map(method => (
+              <label key={method} className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${form.paymentMethod === method ? "border-primary bg-primary/5" : "border-border"}`}>
+                <input type="radio" name="payment" checked={form.paymentMethod === method} onChange={() => setForm({ ...form, paymentMethod: method })} className="accent-[hsl(var(--primary))]" />
+                <div>
+                  <p className="font-body font-medium text-sm text-foreground">{method === "cod" ? "Cash on Delivery" : "M-Pesa"}</p>
+                  <p className="font-body text-xs text-muted-foreground">{method === "cod" ? "Pay when your order arrives" : "Pay via M-Pesa STK Push"}</p>
+                </div>
+              </label>
+            ))}
+          </div>
+
+          {/* Summary */}
+          <div className="bg-card rounded-xl border border-border p-6">
+            <h2 className="font-display font-semibold text-foreground mb-4">Order Summary</h2>
+            {items.map(item => (
+              <div key={item.id} className="flex justify-between text-sm font-body py-1">
+                <span className="text-muted-foreground">{item.product.name} × {item.quantity}</span>
+                <span>{formatPrice(item.product.price * item.quantity)}</span>
+              </div>
+            ))}
+            <div className="border-t border-border mt-3 pt-3 flex justify-between text-sm font-body">
+              <span className="text-muted-foreground">Delivery</span>
+              <span>{deliveryFee === 0 ? "Free" : formatPrice(deliveryFee)}</span>
+            </div>
+            <div className="border-t border-border mt-3 pt-3 flex justify-between font-body">
+              <span className="font-semibold">Total</span>
+              <span className="text-lg font-bold">{formatPrice(grandTotal)}</span>
+            </div>
+          </div>
+
+          <Button type="submit" disabled={loading} className="w-full gradient-brand text-primary-foreground rounded-xl font-body font-semibold py-3 text-base">
+            {loading ? "Placing Order..." : `Place Order · ${formatPrice(grandTotal)}`}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout;
