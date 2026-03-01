@@ -107,6 +107,20 @@ Deno.serve(async (req) => {
 
     const data = await res.json();
     if (!res.ok || data.error) {
+      const errorInfo = data?.error || data;
+      const errorCode = errorInfo?.code || "";
+      
+      // Provide user-friendly error messages
+      if (errorCode === "amount_exceeds_default_limit") {
+        return new Response(
+          JSON.stringify({ 
+            error: "This amount exceeds the online payment limit. Please use Cash on Delivery for this order, or try a smaller order.",
+            code: "amount_limit" 
+          }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
       throw new Error(`Submit order failed: ${JSON.stringify(data)}`);
     }
 
