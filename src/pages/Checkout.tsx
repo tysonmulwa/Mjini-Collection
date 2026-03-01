@@ -15,6 +15,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [whatsappLink, setWhatsappLink] = useState("");
   const [form, setForm] = useState({
     phone: "",
     address: "",
@@ -117,12 +118,6 @@ const Checkout = () => {
     }
 
     // Cash on delivery flow
-    await clearCart();
-    setSuccess(true);
-    setLoading(false);
-    toast.success("Order placed successfully!");
-
-    // Open WhatsApp with order confirmation
     const orderSummary = items.map(i => `${i.product.name} x${i.quantity}`).join(", ");
     const whatsappMsg = encodeURIComponent(
       `🛍️ *Order Confirmation - Mjini Collections*\n\n` +
@@ -135,7 +130,13 @@ const Checkout = () => {
       `Thank you for your order! We'll process it shortly.`
     );
     const storePhone = "254703739265";
-    window.open(`https://wa.me/${storePhone}?text=${whatsappMsg}`, "_blank");
+    const whatsappUrl = `https://wa.me/${storePhone}?text=${whatsappMsg}`;
+
+    await clearCart();
+    setWhatsappLink(whatsappUrl);
+    setSuccess(true);
+    setLoading(false);
+    toast.success("Order placed successfully!");
   };
 
   if (success) {
@@ -146,7 +147,12 @@ const Checkout = () => {
           <h1 className="text-2xl font-display font-bold text-foreground mb-2">Order Placed!</h1>
           <p className="text-muted-foreground font-body mb-6">Thank you for shopping with Mjini Collections. We'll contact you on {form.phone} with delivery updates.</p>
           <div className="flex flex-col gap-3">
-            <Link to="/orders"><Button className="w-full gradient-brand text-primary-foreground rounded-xl font-body">View My Orders</Button></Link>
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <Button className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl font-body">
+                📲 Confirm on WhatsApp
+              </Button>
+            </a>
+            <Link to="/orders"><Button variant="outline" className="w-full rounded-xl font-body">View My Orders</Button></Link>
             <Link to="/"><Button variant="outline" className="w-full rounded-xl font-body">Continue Shopping</Button></Link>
           </div>
         </div>
