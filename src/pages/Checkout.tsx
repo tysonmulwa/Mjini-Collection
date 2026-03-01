@@ -95,7 +95,7 @@ const Checkout = () => {
       `📞 ${form.phone}\n\n` +
       `Thank you for your order! We'll process it shortly.`
     );
-    const storePhone = "254700123456";
+    const storePhone = "254703739265";
     window.open(`https://wa.me/${storePhone}?text=${whatsappMsg}`, "_blank");
   };
 
