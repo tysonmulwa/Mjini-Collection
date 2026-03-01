@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Package, ChevronDown, ChevronUp } from "lucide-react";
 import OrderStatusTimeline from "@/components/store/OrderStatusTimeline";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface OrderItem {
   id: string;
@@ -69,9 +70,13 @@ const Orders = () => {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
+          const newStatus = payload.new.status;
+          const orderId = (payload.new as any).id?.slice(0, 8);
+          const statusLabel = statusConfig[newStatus]?.label || newStatus;
+          toast.info(`Order #${orderId} is now ${statusLabel}`);
           setOrders((prev) =>
             prev.map((o) =>
-              o.id === payload.new.id ? { ...o, status: payload.new.status, payment_method: payload.new.payment_method } : o
+              o.id === payload.new.id ? { ...o, status: newStatus, payment_method: payload.new.payment_method } : o
             )
           );
         }
