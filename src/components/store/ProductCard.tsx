@@ -3,9 +3,9 @@ import { Heart, Star, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useWishlist } from "@/contexts/WishlistContext";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 
@@ -14,9 +14,10 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const [wishlisted, setWishlisted] = useState(false);
   const { addItem } = useCart();
   const { user } = useAuth();
+  const { isWishlisted, toggleWishlist } = useWishlist();
+  const wishlisted = isWishlisted(product.id);
 
   const formatPrice = (price: number) => `KES ${price.toLocaleString()}`;
   const discount = product.on_sale ? Math.round(((product.original_price - product.price) / product.original_price) * 100) : 0;
@@ -28,10 +29,11 @@ const ProductCard = ({ product }: ProductCardProps) => {
     await addItem(product.id);
   };
 
-  const handleWishlist = (e: React.MouseEvent) => {
+  const handleWishlist = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setWishlisted(!wishlisted);
+    if (!user) { toast.error("Please sign in to save items"); return; }
+    await toggleWishlist(product.id);
     toast(wishlisted ? "Removed from wishlist" : "Added to wishlist");
   };
 
