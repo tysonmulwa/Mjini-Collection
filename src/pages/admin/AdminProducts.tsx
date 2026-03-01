@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Search, Upload, Camera, X } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -27,6 +27,11 @@ const AdminProducts = () => {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState(emptyProduct);
   const [saving, setSaving] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const fetchProducts = async () => {
     const { data } = await supabase.from("products").select("*").order("created_at", { ascending: false });
@@ -35,7 +40,7 @@ const AdminProducts = () => {
 
   useEffect(() => { fetchProducts(); }, []);
 
-  const openCreate = () => { setEditing(null); setForm(emptyProduct); setDialogOpen(true); };
+  const openCreate = () => { setEditing(null); setForm(emptyProduct); setImageFile(null); setImagePreview(null); setDialogOpen(true); };
   const openEdit = (p: Product) => {
     setEditing(p);
     setForm({
@@ -44,15 +49,44 @@ const AdminProducts = () => {
       description: p.description || "", sizes: p.sizes || [], colors: p.colors || [],
       in_stock: p.in_stock ?? true, is_new: p.is_new ?? false, on_sale: p.on_sale ?? false,
     });
+    setImageFile(null);
+    setImagePreview(p.image);
     setDialogOpen(true);
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { toast.error("Please select an image file"); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("Image must be under 5MB"); return; }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    const ext = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("product-images").upload(fileName, file);
+    if (error) { toast.error("Image upload failed: " + error.message); return null; }
+    const { data: { publicUrl } } = supabase.storage.from("product-images").getPublicUrl(fileName);
+    return publicUrl;
+  };
+
   const handleSave = async () => {
-    if (!form.name || !form.image || !form.price) { toast.error("Name, image, and price are required"); return; }
+    if (!form.name || (!form.image && !imageFile) || !form.price) { toast.error("Name, image, and price are required"); return; }
     setSaving(true);
+
+    let imageUrl = form.image;
+    if (imageFile) {
+      setUploading(true);
+      const uploaded = await uploadImage(imageFile);
+      setUploading(false);
+      if (!uploaded) { setSaving(false); return; }
+      imageUrl = uploaded;
+    }
     const payload = {
       name: form.name, category: form.category, subcategory: form.subcategory || form.category,
-      price: form.price, original_price: form.original_price || form.price, image: form.image,
+      price: form.price, original_price: form.original_price || form.price, image: imageUrl,
       description: form.description || null, sizes: form.sizes.length ? form.sizes : null,
       colors: form.colors.length ? form.colors : null,
       in_stock: form.in_stock, is_new: form.is_new, on_sale: form.on_sale,
@@ -120,7 +154,33 @@ const AdminProducts = () => {
                   <div><Label>Price (KES)</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></div>
                   <div><Label>Original Price</Label><Input type="number" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: +e.target.value })} /></div>
                 </div>
-                <div><Label>Image URL</Label><Input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} /></div>
+                <div>
+                  <Label>Product Image</Label>
+                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+                  <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleImageSelect} className="hidden" />
+                  {imagePreview ? (
+                    <div className="relative mt-2 rounded-lg overflow-hidden border border-border bg-muted">
+                      <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => { setImageFile(null); setImagePreview(null); setForm({ ...form, image: "" }); }}
+                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm rounded-full p-1 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="mt-2 flex gap-2">
+                      <Button type="button" variant="outline" className="flex-1" onClick={() => fileInputRef.current?.click()}>
+                        <Upload className="w-4 h-4 mr-2" /> Choose File
+                      </Button>
+                      <Button type="button" variant="outline" className="flex-1" onClick={() => cameraInputRef.current?.click()}>
+                        <Camera className="w-4 h-4 mr-2" /> Take Photo
+                      </Button>
+                    </div>
+                  )}
+                  {uploading && <p className="text-xs text-muted-foreground mt-1">Uploading image...</p>}
+                </div>
                 <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} /></div>
                 <div><Label>Sizes (comma-separated)</Label><Input value={form.sizes.join(", ")} onChange={(e) => setForm({ ...form, sizes: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} placeholder="36, 37, 38, 39" /></div>
                 <div><Label>Colors (comma-separated)</Label><Input value={form.colors.join(", ")} onChange={(e) => setForm({ ...form, colors: e.target.value.split(",").map((s) => s.trim()).filter(Boolean) })} placeholder="Black, Red, White" /></div>
@@ -129,8 +189,8 @@ const AdminProducts = () => {
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.is_new} onChange={(e) => setForm({ ...form, is_new: e.target.checked })} /> New</label>
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.on_sale} onChange={(e) => setForm({ ...form, on_sale: e.target.checked })} /> On Sale</label>
                 </div>
-                <Button onClick={handleSave} disabled={saving} className="w-full gradient-brand text-primary-foreground">
-                  {saving ? "Saving..." : editing ? "Update Product" : "Create Product"}
+                <Button onClick={handleSave} disabled={saving || uploading} className="w-full gradient-brand text-primary-foreground">
+                  {uploading ? "Uploading..." : saving ? "Saving..." : editing ? "Update Product" : "Create Product"}
                 </Button>
               </div>
             </DialogContent>
