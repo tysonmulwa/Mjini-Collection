@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Star, ShoppingBag, Heart, Minus, Plus } from "lucide-react";
@@ -12,7 +14,11 @@ const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [product, setProduct] = useState<Tables<"products"> | null>(null);
+  const [images, setImages] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string>("");
@@ -26,6 +32,21 @@ const ProductDetail = () => {
       setProduct(data);
       if (data.sizes?.length) setSelectedSize(data.sizes[0]);
       if (data.colors?.length) setSelectedColor(data.colors[0]);
+
+      // Load gallery images from storage
+      const { data: files } = await supabase.storage
+        .from("product-images")
+        .list(`${id}`, { limit: 10, sortBy: { column: "name", order: "asc" } });
+
+      if (files && files.length > 0) {
+        const urls = files
+          .filter(f => !f.name.startsWith("."))
+          .map(f => supabase.storage.from("product-images").getPublicUrl(`${id}/${f.name}`).data.publicUrl);
+        setImages([data.image, ...urls]);
+      } else {
+        setImages([data.image]);
+      }
+
       setLoading(false);
     };
     fetchProduct();
@@ -41,9 +62,16 @@ const ProductDetail = () => {
 
   const formatPrice = (price: number) => `KES ${price.toLocaleString()}`;
   const discount = product.on_sale ? Math.round(((product.original_price - product.price) / product.original_price) * 100) : 0;
+  const wishlisted = isWishlisted(product.id);
 
   const handleAddToCart = async () => {
     await addItem(product.id, quantity, selectedSize || undefined, selectedColor || undefined);
+  };
+
+  const handleWishlist = async () => {
+    if (!user) { toast.error("Please sign in to save items"); return; }
+    await toggleWishlist(product.id);
+    toast(wishlisted ? "Removed from wishlist" : "Added to wishlist");
   };
 
   return (
@@ -54,14 +82,31 @@ const ProductDetail = () => {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          {/* Image */}
-          <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-secondary">
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              {product.is_new && <Badge className="bg-primary text-primary-foreground border-0 font-body text-xs">New</Badge>}
-              {product.on_sale && <Badge className="bg-accent text-accent-foreground border-0 font-body text-xs">-{discount}%</Badge>}
-              {!product.in_stock && <Badge className="bg-muted text-muted-foreground border-0 font-body text-xs">Sold Out</Badge>}
+          {/* Image Gallery */}
+          <div className="space-y-3">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-secondary">
+              <img src={images[selectedImage]} alt={product.name} className="w-full h-full object-cover" />
+              <div className="absolute top-4 left-4 flex flex-col gap-2">
+                {product.is_new && <Badge className="bg-primary text-primary-foreground border-0 font-body text-xs">New</Badge>}
+                {product.on_sale && <Badge className="bg-accent text-accent-foreground border-0 font-body text-xs">-{discount}%</Badge>}
+                {!product.in_stock && <Badge className="bg-muted text-muted-foreground border-0 font-body text-xs">Sold Out</Badge>}
+              </div>
             </div>
+            {images.length > 1 && (
+              <div className="flex gap-2 overflow-x-auto pb-1">
+                {images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSelectedImage(i)}
+                    className={`shrink-0 w-16 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                      selectedImage === i ? "border-primary" : "border-transparent opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img} alt={`${product.name} ${i + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Details */}
@@ -128,8 +173,8 @@ const ProductDetail = () => {
                 <ShoppingBag className="w-4 h-4 mr-2" />
                 {product.in_stock ? "Add to Bag" : "Sold Out"}
               </Button>
-              <Button variant="outline" size="icon" className="rounded-xl border-border w-12 h-12">
-                <Heart className="w-5 h-5" />
+              <Button variant="outline" size="icon" onClick={handleWishlist} className="rounded-xl border-border w-12 h-12">
+                <Heart className={`w-5 h-5 transition-colors ${wishlisted ? "fill-accent text-accent" : ""}`} />
               </Button>
             </div>
 
