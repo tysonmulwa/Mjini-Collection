@@ -96,7 +96,10 @@ const Checkout = () => {
         });
 
         if (pesapalError || !pesapalData?.redirect_url) {
-          toast.error("Failed to initiate payment. Try Cash on Delivery.");
+          const msg = pesapalData?.code === "amount_limit" 
+            ? pesapalData.error 
+            : "Failed to initiate payment. Try Cash on Delivery.";
+          toast.error(msg);
           setLoading(false);
           return;
         }
