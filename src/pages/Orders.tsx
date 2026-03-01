@@ -55,6 +55,31 @@ const Orders = () => {
       setLoading(false);
     };
     fetchOrders();
+
+    // Subscribe to realtime order updates
+    const channel = supabase
+      .channel("my-orders")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "orders",
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          setOrders((prev) =>
+            prev.map((o) =>
+              o.id === payload.new.id ? { ...o, status: payload.new.status, payment_method: payload.new.payment_method } : o
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   if (!user) {
@@ -133,7 +158,7 @@ const Orders = () => {
                       <div className="border-t border-border pt-3 text-xs font-body text-muted-foreground space-y-1">
                         <p>📍 {order.delivery_address || "—"}, {order.delivery_city || "Nairobi"}</p>
                         <p>📞 {order.phone || "—"}</p>
-                        <p>💳 {order.payment_method === "cod" ? "Cash on Delivery" : "M-Pesa"}</p>
+                        <p>💳 {order.payment_method === "cod" ? "Cash on Delivery" : order.payment_method.startsWith("pesapal") ? "Pesapal (Online)" : order.payment_method}</p>
                       </div>
                     </div>
                   )}

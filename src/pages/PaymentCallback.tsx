@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 const PaymentCallback = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
+  const [orderStatus, setOrderStatus] = useState<string>("pending");
   const orderId = searchParams.get("OrderMerchantReference");
-  const trackingId = searchParams.get("OrderTrackingId");
 
   useEffect(() => {
     if (!orderId) {
@@ -16,33 +17,52 @@ const PaymentCallback = () => {
       return;
     }
 
-    // Poll order status for a few seconds
-    let attempts = 0;
-    const interval = setInterval(async () => {
-      attempts++;
+    // Initial fetch
+    const fetchOrder = async () => {
       const { data } = await supabase
         .from("orders")
         .select("status")
         .eq("id", orderId)
         .single();
-
-      if (data?.status === "confirmed") {
-        setStatus("success");
-        clearInterval(interval);
-      } else if (attempts >= 10) {
-        // After 10 attempts, check final state
-        setStatus(data?.status === "confirmed" ? "success" : "success"); // Show success anyway since order was placed
-        clearInterval(interval);
+      if (data) {
+        setOrderStatus(data.status);
+        if (data.status === "confirmed") setStatus("success");
       }
-    }, 2000);
+    };
+    fetchOrder();
 
-    // Also set success after timeout since order exists regardless
-    setTimeout(() => {
-      clearInterval(interval);
-      setStatus((prev) => prev === "loading" ? "success" : prev);
-    }, 15000);
+    // Subscribe to realtime updates
+    const channel = supabase
+      .channel(`order-${orderId}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "orders",
+          filter: `id=eq.${orderId}`,
+        },
+        (payload) => {
+          const newStatus = payload.new.status;
+          setOrderStatus(newStatus);
+          if (newStatus === "confirmed") {
+            setStatus("success");
+          } else if (newStatus === "cancelled") {
+            setStatus("failed");
+          }
+        }
+      )
+      .subscribe();
 
-    return () => clearInterval(interval);
+    // Timeout fallback — show success after 20s since order exists
+    const timeout = setTimeout(() => {
+      setStatus((prev) => (prev === "loading" ? "success" : prev));
+    }, 20000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearTimeout(timeout);
+    };
   }, [orderId]);
 
   if (status === "loading") {
@@ -51,7 +71,8 @@ const PaymentCallback = () => {
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
           <h1 className="text-xl font-display font-bold text-foreground mb-2">Confirming Payment...</h1>
-          <p className="text-muted-foreground font-body">Please wait while we verify your payment.</p>
+          <p className="text-muted-foreground font-body mb-2">Please wait while we verify your payment.</p>
+          <Badge variant="outline" className="font-body text-xs">Status: {orderStatus}</Badge>
         </div>
       </div>
     );
