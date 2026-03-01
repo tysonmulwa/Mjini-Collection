@@ -82,6 +82,21 @@ const Checkout = () => {
     setSuccess(true);
     setLoading(false);
     toast.success("Order placed successfully!");
+
+    // Open WhatsApp with order confirmation
+    const orderSummary = items.map(i => `${i.product.name} x${i.quantity}`).join(", ");
+    const whatsappMsg = encodeURIComponent(
+      `🛍️ *Order Confirmation - Mjini Collections*\n\n` +
+      `Order #${order.id.slice(0, 8)}\n` +
+      `Items: ${orderSummary}\n` +
+      `Total: KES ${grandTotal.toLocaleString()}\n` +
+      `Payment: ${form.paymentMethod === "cod" ? "Cash on Delivery" : "M-Pesa"}\n` +
+      `📍 ${form.address}, ${form.city}\n` +
+      `📞 ${form.phone}\n\n` +
+      `Thank you for your order! We'll process it shortly.`
+    );
+    const storePhone = "254700123456";
+    window.open(`https://wa.me/${storePhone}?text=${whatsappMsg}`, "_blank");
   };
 
   if (success) {
@@ -91,7 +106,10 @@ const Checkout = () => {
           <CheckCircle className="w-16 h-16 text-primary mx-auto mb-4" />
           <h1 className="text-2xl font-display font-bold text-foreground mb-2">Order Placed!</h1>
           <p className="text-muted-foreground font-body mb-6">Thank you for shopping with Mjini Collections. We'll contact you on {form.phone} with delivery updates.</p>
-          <Link to="/"><Button className="gradient-brand text-primary-foreground rounded-xl font-body">Continue Shopping</Button></Link>
+          <div className="flex flex-col gap-3">
+            <Link to="/orders"><Button className="w-full gradient-brand text-primary-foreground rounded-xl font-body">View My Orders</Button></Link>
+            <Link to="/"><Button variant="outline" className="w-full rounded-xl font-body">Continue Shopping</Button></Link>
+          </div>
         </div>
       </div>
     );
