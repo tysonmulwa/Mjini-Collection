@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Package, ChevronDown, ChevronUp } from "lucide-react";
+import OrderStatusTimeline from "@/components/store/OrderStatusTimeline";
 import { format } from "date-fns";
 
 interface OrderItem {
@@ -141,6 +142,7 @@ const Orders = () => {
 
                   {expanded && (
                     <div className="border-t border-border p-4 space-y-3 animate-fade-in">
+                      <OrderStatusTimeline status={order.status} />
                       {order.order_items.map((item) => (
                         <div key={item.id} className="flex items-center gap-3">
                           <img src={item.products?.image || "/placeholder.svg"} alt={item.products?.name || ""} className="w-12 h-14 object-cover rounded-lg bg-muted" />
