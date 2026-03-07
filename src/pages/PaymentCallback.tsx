@@ -52,6 +52,7 @@ const PaymentCallback = () => {
           setOrderStatus(newStatus);
           if (newStatus === "confirmed") {
             setStatus("success");
+            clearCart();
           } else if (newStatus === "cancelled") {
             setStatus("failed");
           }
