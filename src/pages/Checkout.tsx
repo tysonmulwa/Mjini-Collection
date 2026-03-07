@@ -84,8 +84,12 @@ const Checkout = () => {
         });
 
         if (pesapalError || !pesapalData?.redirect_url) {
-          const msg = pesapalData?.code === "amount_limit" 
-            ? pesapalData.error 
+          // Parse error from either pesapalData or pesapalError
+          const errorData = pesapalData || (pesapalError as any)?.context?.body;
+          const isAmountLimit = errorData?.code === "amount_limit" || 
+            (typeof pesapalError === "object" && JSON.stringify(pesapalError).includes("amount_limit"));
+          const msg = isAmountLimit
+            ? "This amount exceeds the online payment limit. Please use Cash on Delivery."
             : "Failed to initiate payment. Try Cash on Delivery.";
           toast.error(msg);
           setLoading(false);
