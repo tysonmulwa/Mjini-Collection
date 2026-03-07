@@ -19,7 +19,7 @@ const Footer = () => {
               <a href="mailto:hello@mjinicollections.co.ke" className="hover:text-primary transition-colors break-all">hello@mjinicollections.co.ke</a>
             </div>
             <div className="flex items-center gap-3">
-              <a href="https://www.instagram.com/mjini_collection?igsh=dm1rYnF6dnVqdjJi&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram">
+              <a href="https://www.instagram.com/mjini_collection/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Instagram">
                 <Instagram className="w-4 h-4" />
               </a>
               <a href="https://www.tiktok.com/@mjinicollection?_r=1&_t=ZS-94Uw3Xodoqf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="TikTok">
