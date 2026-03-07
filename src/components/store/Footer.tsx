@@ -11,9 +11,7 @@ const Footer = () => {
           {/* Brand & Contact */}
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 border border-primary/30 flex items-center justify-center">
-                <span className="text-primary font-bold text-sm">M</span>
-              </div>
+              <img src={logo} alt="Mjini Collections" className="w-6 h-6 rounded object-cover" />
               <span className="font-bold text-foreground text-sm">Mjini</span>
             </div>
             <div className="flex flex-col gap-1 text-xs text-muted-foreground mb-3">
