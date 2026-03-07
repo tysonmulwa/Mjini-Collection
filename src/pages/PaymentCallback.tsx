@@ -28,7 +28,10 @@ const PaymentCallback = () => {
         .single();
       if (data) {
         setOrderStatus(data.status);
-        if (data.status === "confirmed") setStatus("success");
+        if (data.status === "confirmed") {
+          setStatus("success");
+          clearCart();
+        }
       }
     };
     fetchOrder();
