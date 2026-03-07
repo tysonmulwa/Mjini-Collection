@@ -39,7 +39,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <HeroBanner onCategorySelect={setSelectedCategory} />
+      
       <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelect={setSelectedCategory} productCount={filteredProducts.length} />
 
       {/* Products Section */}
