@@ -64,24 +64,80 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { orderId, amount, phone, email, firstName, lastName, callbackUrl } =
-      await req.json();
+    const {
+      userId,
+      amount,
+      phone,
+      email,
+      firstName,
+      lastName,
+      callbackUrl,
+      deliveryAddress,
+      deliveryCity,
+      notes,
+      items,
+    } = await req.json();
 
-    if (!orderId || !amount || !phone) {
+    if (!userId || !amount || !phone || !items?.length) {
       return new Response(
         JSON.stringify({ error: "Missing required fields" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    // Create the order server-side using service role
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const { data: order, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        user_id: userId,
+        total: amount,
+        payment_method: "pesapal",
+        delivery_address: deliveryAddress || null,
+        delivery_city: deliveryCity || "Nairobi",
+        phone,
+        notes: notes || null,
+        status: "pending",
+      })
+      .select()
+      .single();
+
+    if (orderError || !order) {
+      console.error("Order creation failed:", orderError);
+      throw new Error(`Failed to create order: ${orderError?.message}`);
+    }
+
+    // Insert order items
+    const orderItems = items.map((item: any) => ({
+      order_id: order.id,
+      product_id: item.product_id,
+      quantity: item.quantity,
+      price: item.price,
+      size: item.size || null,
+      color: item.color || null,
+    }));
+
+    const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
+    if (itemsError) {
+      console.error("Order items creation failed:", itemsError);
+      // Clean up the order
+      await supabase.from("orders").delete().eq("id", order.id);
+      throw new Error(`Failed to create order items: ${itemsError.message}`);
+    }
+
+    // Now initiate Pesapal payment
     const token = await getPesapalToken();
     const ipnId = await registerIPN(token);
 
     const orderRequest = {
-      id: orderId,
+      id: order.id,
       currency: "KES",
       amount,
-      description: `Mjini Collections Order #${orderId.slice(0, 8)}`,
+      description: `Mjini Collections Order #${order.id.slice(0, 8)}`,
       callback_url: callbackUrl,
       notification_id: ipnId,
       billing_address: {
@@ -109,18 +165,21 @@ Deno.serve(async (req) => {
     if (!res.ok || data.error) {
       const errorInfo = data?.error || data;
       const errorCode = errorInfo?.code || "";
-      
-      // Provide user-friendly error messages
+
+      // Clean up order if payment initiation fails
+      await supabase.from("order_items").delete().eq("order_id", order.id);
+      await supabase.from("orders").delete().eq("id", order.id);
+
       if (errorCode === "amount_exceeds_default_limit") {
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             error: "This amount exceeds the online payment limit. Please use Cash on Delivery for this order, or try a smaller order.",
-            code: "amount_limit" 
+            code: "amount_limit",
           }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      
+
       throw new Error(`Submit order failed: ${JSON.stringify(data)}`);
     }
 
@@ -129,6 +188,7 @@ Deno.serve(async (req) => {
         redirect_url: data.redirect_url,
         order_tracking_id: data.order_tracking_id,
         merchant_reference: data.merchant_reference,
+        orderId: order.id,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

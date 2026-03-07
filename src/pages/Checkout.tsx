@@ -55,11 +55,59 @@ const Checkout = () => {
     if (!form.phone || !form.address) { toast.error("Please fill in delivery details"); return; }
     setLoading(true);
 
-    // Create order in database
+    if (form.paymentMethod === "pesapal") {
+      // For Pesapal: order is created server-side in the edge function
+      try {
+        const callbackUrl = `${window.location.origin}/payment-callback`;
+        const cartItems = items.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          price: item.product.price,
+          size: item.size,
+          color: item.color,
+        }));
+
+        const { data: pesapalData, error: pesapalError } = await supabase.functions.invoke("pesapal-payment", {
+          body: {
+            userId: user.id,
+            amount: grandTotal,
+            phone: form.phone,
+            email: user.email,
+            firstName: user.user_metadata?.full_name?.split(" ")[0] || "",
+            lastName: user.user_metadata?.full_name?.split(" ").slice(1).join(" ") || "",
+            callbackUrl,
+            deliveryAddress: form.address,
+            deliveryCity: form.city,
+            notes: form.notes,
+            items: cartItems,
+          },
+        });
+
+        if (pesapalError || !pesapalData?.redirect_url) {
+          const msg = pesapalData?.code === "amount_limit" 
+            ? pesapalData.error 
+            : "Failed to initiate payment. Try Cash on Delivery.";
+          toast.error(msg);
+          setLoading(false);
+          return;
+        }
+
+        await clearCart();
+        window.location.href = pesapalData.redirect_url;
+        return;
+      } catch (err) {
+        console.error("Pesapal error:", err);
+        toast.error("Payment service unavailable. Try Cash on Delivery.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Cash on delivery flow — create order client-side
     const { data: order, error: orderError } = await supabase.from("orders").insert({
       user_id: user.id,
       total: grandTotal,
-      payment_method: form.paymentMethod,
+      payment_method: "cod",
       delivery_address: form.address,
       delivery_city: form.city,
       phone: form.phone,
@@ -80,44 +128,6 @@ const Checkout = () => {
     const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
     if (itemsError) { toast.error("Failed to save order items"); setLoading(false); return; }
 
-    if (form.paymentMethod === "pesapal") {
-      // Initiate Pesapal payment
-      try {
-        const callbackUrl = `${window.location.origin}/payment-callback`;
-        const { data: pesapalData, error: pesapalError } = await supabase.functions.invoke("pesapal-payment", {
-          body: {
-            orderId: order.id,
-            amount: grandTotal,
-            phone: form.phone,
-            email: user.email,
-            firstName: user.user_metadata?.full_name?.split(" ")[0] || "",
-            lastName: user.user_metadata?.full_name?.split(" ").slice(1).join(" ") || "",
-            callbackUrl,
-          },
-        });
-
-        if (pesapalError || !pesapalData?.redirect_url) {
-          const msg = pesapalData?.code === "amount_limit" 
-            ? pesapalData.error 
-            : "Failed to initiate payment. Try Cash on Delivery.";
-          toast.error(msg);
-          setLoading(false);
-          return;
-        }
-
-        await clearCart();
-        // Redirect to Pesapal payment page
-        window.location.href = pesapalData.redirect_url;
-        return;
-      } catch (err) {
-        console.error("Pesapal error:", err);
-        toast.error("Payment service unavailable. Try Cash on Delivery.");
-        setLoading(false);
-        return;
-      }
-    }
-
-    // Cash on delivery flow
     const orderSummary = items.map(i => `${i.product.name} x${i.quantity}`).join(", ");
     const whatsappMsg = encodeURIComponent(
       `🛍️ *Order Confirmation - Mjini Collections*\n\n` +
