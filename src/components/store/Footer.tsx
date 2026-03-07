@@ -3,11 +3,12 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-muted border-t border-border/10">
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="container mx-auto px-4 py-8">
+        {/* Mobile: stacked, Desktop: row */}
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-8">
           {/* Brand & Contact */}
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="col-span-2 md:col-span-1">
+            <div className="flex items-center gap-2 mb-3">
               <div className="w-6 h-6 border border-primary/30 flex items-center justify-center">
                 <span className="text-primary font-bold text-sm">M</span>
               </div>
@@ -15,36 +16,36 @@ const Footer = () => {
             </div>
             <div className="flex flex-col gap-1 text-xs text-muted-foreground">
               <a href="tel:+254703739265" className="hover:text-primary transition-colors">+254 703 739 265</a>
-              <a href="mailto:hello@mjinicollections.co.ke" className="hover:text-primary transition-colors">hello@mjinicollections.co.ke</a>
+              <a href="mailto:hello@mjinicollections.co.ke" className="hover:text-primary transition-colors break-all">hello@mjinicollections.co.ke</a>
             </div>
           </div>
 
-          {/* Links */}
-          <div className="flex gap-8 text-xs">
-            <div>
-              <p className="font-semibold text-foreground mb-2 uppercase tracking-wider">Shop</p>
-              <ul className="space-y-1 text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Heels</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Sneakers</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Beauty</a></li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-2 uppercase tracking-wider">Help</p>
-              <ul className="space-y-1 text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Track Order</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Returns</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
-              </ul>
-            </div>
+          {/* Shop Links */}
+          <div>
+            <p className="font-semibold text-foreground mb-2 text-xs uppercase tracking-wider">Shop</p>
+            <ul className="space-y-1.5 text-xs text-muted-foreground">
+              <li><a href="#" className="hover:text-primary transition-colors">Heels</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Sneakers</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Beauty</a></li>
+            </ul>
+          </div>
+
+          {/* Help Links */}
+          <div>
+            <p className="font-semibold text-foreground mb-2 text-xs uppercase tracking-wider">Help</p>
+            <ul className="space-y-1.5 text-xs text-muted-foreground">
+              <li><Link to="/orders" className="hover:text-primary transition-colors">Track Order</Link></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Returns</a></li>
+              <li><a href="tel:+254703739265" className="hover:text-primary transition-colors">Contact</a></li>
+            </ul>
           </div>
 
           {/* Copyright */}
-          <div className="text-center md:text-right">
+          <div className="col-span-2 md:col-span-1 pt-4 md:pt-0 border-t border-border/10 md:border-0">
             <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
               © {new Date().getFullYear()} Mjini Collections
             </p>
-            <p className="text-[10px] text-muted-foreground">Made with 💕 in Kenya</p>
+            <p className="text-[10px] text-muted-foreground mt-1">Made with 💕 in Kenya</p>
           </div>
         </div>
       </div>
