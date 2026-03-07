@@ -28,7 +28,7 @@ const Footer = () => {
               <a href="https://wa.me/254703739265" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="WhatsApp">
                 <MessageCircle className="w-4 h-4" />
               </a>
-              <a href="https://www.facebook.com/share/1DbVJ6EysU/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook">
+              <a href="https://www.facebook.com/mjinicollections" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="Facebook">
                 <Facebook className="w-4 h-4" />
               </a>
             </div>
