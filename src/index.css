@@ -14,7 +14,7 @@
     --foreground: 0 0% 9%;
 
     --card: 0 0% 98%;
-    --card-foreground: 0 95% 58%;
+    --card-foreground: 229 84% 4.902%;
 
     --popover: 0 0% 89%;
     --popover-foreground: 0 0% 9%;
@@ -31,12 +31,12 @@
     --accent: 166 76% 96%;
     --accent-foreground: 109 80% 40%;
 
-    --destructive: 0 72% 50%;
+    --destructive: 224 71.4286% 4.1176%;
     --destructive-foreground: 0 85% 97%;
 
     --border: 0 0% 83%;
-    --input: 0 0% 83%;
-    --ring: 161 93% 30%;
+    --input: 110 91% 50%;
+    --ring: 0 0% 98.0392%;
 
     --radius: 0.75rem;
 
