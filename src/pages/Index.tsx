@@ -40,6 +40,29 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
+      {/* Minimal Hero Section */}
+      <section className="py-16 md:py-20 border-b border-border/30">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-8">
+            Curated Fashion & Beauty
+          </h1>
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => setSelectedCategory("shoes")}
+              className="px-6 py-2.5 bg-primary text-primary-foreground font-body text-sm font-semibold rounded-none hover:opacity-80 transition-opacity"
+            >
+              Shop Shoes
+            </button>
+            <button
+              onClick={() => setSelectedCategory("beauty")}
+              className="px-6 py-2.5 bg-transparent border border-primary text-primary font-body text-sm font-semibold rounded-none hover:bg-primary hover:text-primary-foreground transition-all"
+            >
+              Beauty Products
+            </button>
+          </div>
+        </div>
+      </section>
+      
       <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelect={setSelectedCategory} productCount={filteredProducts.length} />
 
       {/* Products Section */}
