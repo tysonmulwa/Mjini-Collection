@@ -38,7 +38,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header searchQuery={searchQuery} onSearchChange={setSearchChange} />
+      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
       
       {/* Minimal Hero Section */}
       <section className="py-16 md:py-20 border-b border-border/30">
