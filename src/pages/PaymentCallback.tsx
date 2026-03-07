@@ -62,7 +62,13 @@ const PaymentCallback = () => {
 
     // Timeout fallback — show success after 20s since order exists
     const timeout = setTimeout(() => {
-      setStatus((prev) => (prev === "loading" ? "success" : prev));
+      setStatus((prev) => {
+        if (prev === "loading") {
+          clearCart();
+          return "success";
+        }
+        return prev;
+      });
     }, 20000);
 
     return () => {
