@@ -18,10 +18,10 @@ export default {
 			}
 		},
 		extend: {
-			fontFamily: {
-				display: ['Outfit', 'sans-serif'],
-				body: ['"Plus Jakarta Sans"', 'sans-serif'],
-			},
+		fontFamily: {
+			display: ['"Playfair Display"', 'serif'],
+			body: ['"DM Sans"', 'sans-serif'],
+		},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
