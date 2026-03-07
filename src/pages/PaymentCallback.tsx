@@ -96,9 +96,10 @@ const PaymentCallback = () => {
         <div className="text-center max-w-sm">
           <XCircle className="w-16 h-16 text-destructive mx-auto mb-4" />
           <h1 className="text-2xl font-display font-bold text-foreground mb-2">Payment Issue</h1>
-          <p className="text-muted-foreground font-body mb-6">There was an issue confirming your payment. Your order has been saved and we'll follow up.</p>
+          <p className="text-muted-foreground font-body mb-6">There was an issue confirming your payment. Your items are still in your cart — you can try again.</p>
           <div className="flex flex-col gap-3">
-            <Link to="/orders"><Button className="w-full gradient-brand text-primary-foreground rounded-xl font-body">View My Orders</Button></Link>
+            <Link to="/checkout"><Button className="w-full gradient-brand text-primary-foreground rounded-xl font-body">Try Payment Again</Button></Link>
+            <Link to="/orders"><Button variant="outline" className="w-full rounded-xl font-body">View My Orders</Button></Link>
             <Link to="/"><Button variant="outline" className="w-full rounded-xl font-body">Continue Shopping</Button></Link>
           </div>
         </div>
