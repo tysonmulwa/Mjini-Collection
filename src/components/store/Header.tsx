@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, Heart, Menu, User, X, LogOut, Package, UserCircle } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
+import logo from "@/assets/logo.jpeg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
@@ -39,9 +40,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
 
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 shrink-0 group">
-              <div className="w-10 h-10 bg-accent flex items-center justify-center border border-primary/30">
-                <span className="text-primary font-display font-bold text-xl">M</span>
-              </div>
+              <img src={logo} alt="Mjini Collections" className="w-10 h-10 rounded object-cover" />
               <div className="hidden sm:block">
                 <h1 className="text-lg font-display font-bold text-foreground leading-none tracking-wide">Mjini</h1>
                 <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-body mt-0.5">Collections</p>
