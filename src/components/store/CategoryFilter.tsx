@@ -15,29 +15,29 @@ interface CategoryFilterProps {
 
 const CategoryFilter = ({ categories, selectedCategory, onSelect, productCount }: CategoryFilterProps) => {
   return (
-    <section className="py-6 border-b border-border bg-card">
+    <section className="py-5 bg-background sticky top-[88px] z-40 border-b border-border/50">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex flex-wrap gap-2">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
             {categories.map((category) => (
               <Button
                 key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
+                variant="ghost"
                 size="sm"
-                className={`rounded-full px-5 py-2 font-body text-sm transition-all ${
+                className={`rounded-full px-5 h-9 font-body text-sm transition-all duration-300 shrink-0 ${
                   selectedCategory === category.id
-                    ? "gradient-brand text-primary-foreground border-0 shadow-md"
-                    : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                    ? "gradient-brand text-primary-foreground shadow-md hover:shadow-lg scale-[1.02]"
+                    : "bg-secondary/60 text-muted-foreground hover:text-foreground hover:bg-secondary"
                 }`}
                 onClick={() => onSelect(category.id)}
               >
-                <span className="mr-1.5">{category.icon}</span>
+                <span className="mr-1.5 text-base">{category.icon}</span>
                 {category.name}
               </Button>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground font-body shrink-0">
-            {productCount} {productCount === 1 ? "product" : "products"}
+          <p className="text-xs text-muted-foreground font-body shrink-0 tabular-nums bg-secondary/60 px-3 py-1.5 rounded-full">
+            {productCount} {productCount === 1 ? "item" : "items"}
           </p>
         </div>
       </div>
