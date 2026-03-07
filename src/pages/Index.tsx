@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/store/Header";
-import HeroBanner from "@/components/store/HeroBanner";
+
 import CategoryFilter from "@/components/store/CategoryFilter";
 import ProductCard from "@/components/store/ProductCard";
 import Features from "@/components/store/Features";
@@ -39,7 +39,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <HeroBanner onCategorySelect={setSelectedCategory} />
+      
       <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelect={setSelectedCategory} productCount={filteredProducts.length} />
 
       {/* Products Section */}
