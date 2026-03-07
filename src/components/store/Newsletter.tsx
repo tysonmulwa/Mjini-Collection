@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Send } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
@@ -15,38 +15,34 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="relative overflow-hidden py-20">
-      {/* Background */}
-      <div className="absolute inset-0 gradient-brand" />
-      <div className="absolute inset-0 opacity-[0.04]" style={{
-        backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-        backgroundSize: '24px 24px'
-      }} />
-      <div className="absolute -top-1/2 -right-1/4 w-[500px] h-[500px] bg-primary-foreground/5 rounded-full blur-[100px]" />
+    <section className="relative overflow-hidden py-20 bg-accent">
+      {/* Subtle glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-primary/5 rounded-full blur-[120px]" />
 
       <div className="container mx-auto px-4 relative z-10 text-center">
-        <p className="text-[11px] uppercase tracking-[0.25em] text-primary-foreground/60 font-body font-bold mb-3">Newsletter</p>
-        <h2 className="text-2xl md:text-4xl font-display font-black text-primary-foreground mb-3">
-          Stay In The <span className="italic font-light">Loop</span>
+        <div className="w-12 h-px bg-primary/40 mx-auto mb-6" />
+        <p className="text-[10px] uppercase tracking-[0.3em] text-primary/70 font-body font-medium mb-3">Newsletter</p>
+        <h2 className="text-2xl md:text-4xl font-display font-bold text-accent-foreground mb-3">
+          Stay In The <span className="italic text-primary">Loop</span>
         </h2>
-        <p className="text-primary-foreground/60 font-body text-sm mb-8 max-w-md mx-auto">
+        <p className="text-accent-foreground/40 font-body text-sm mb-10 max-w-md mx-auto">
           Get exclusive offers, new arrivals & beauty tips delivered to your inbox
         </p>
-        <form onSubmit={handleSubscribe} className="max-w-md mx-auto flex gap-2">
+        <form onSubmit={handleSubscribe} className="max-w-md mx-auto flex gap-0">
           <Input
             type="email"
             placeholder="Your email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="flex-1 rounded-xl border-0 bg-primary-foreground/10 backdrop-blur-md text-primary-foreground placeholder:text-primary-foreground/40 font-body text-sm h-12 px-5 focus-visible:ring-2 focus-visible:ring-primary-foreground/30"
+            className="flex-1 rounded-none border border-accent-foreground/15 bg-transparent text-accent-foreground placeholder:text-accent-foreground/30 font-body text-sm h-12 px-5 focus-visible:ring-1 focus-visible:ring-primary/40"
           />
           <Button
             type="submit"
-            className="bg-primary-foreground text-foreground hover:bg-primary-foreground/90 rounded-xl px-6 h-12 font-body font-bold text-sm shadow-xl hover:scale-[1.02] transition-all"
+            className="gradient-brand text-primary-foreground rounded-none px-6 h-12 font-body font-semibold text-xs uppercase tracking-wider"
           >
-            <Send className="w-4 h-4 mr-2" />
             Subscribe
+            <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </form>
       </div>
