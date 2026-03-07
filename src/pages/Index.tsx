@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/store/Header";
-import HeroBanner from "@/components/store/HeroBanner";
+
 import CategoryFilter from "@/components/store/CategoryFilter";
 import ProductCard from "@/components/store/ProductCard";
 import Features from "@/components/store/Features";
