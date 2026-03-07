@@ -92,7 +92,7 @@ const Checkout = () => {
           return;
         }
 
-        await clearCart();
+        // Don't clear cart yet — only clear after successful payment confirmation
         window.location.href = pesapalData.redirect_url;
         return;
       } catch (err) {
