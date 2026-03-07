@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 const PaymentCallback = () => {
+  const { clearCart } = useCart();
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "failed">("loading");
   const [orderStatus, setOrderStatus] = useState<string>("pending");
