@@ -9,12 +9,12 @@ const Footer = () => {
         <div className="grid grid-cols-2 gap-5 md:grid-cols-4 md:gap-8">
           {/* Brand & Contact */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="mb-3 flex-row flex items-center justify-start gap-[5px]">
               <img src={logo} alt="Mjini Collections" className="w-6 h-6 rounded object-cover" />
-              <span className="font-bold text-foreground text-sm">Mjini</span>
+              <span className="font-bold text-foreground text-sm">Mjini Collection </span>
             </div>
             <div className="flex flex-col gap-1.5 text-xs text-muted-foreground mb-3">
-              <a href="tel:+254703739265" className="hover:text-primary transition-colors min-h-[44px] flex items-center md:min-h-0">+254 703 739 265</a>
+              <a href="tel:+254703739265" className="hover:text-primary transition-colors min-h-[44px] flex items-center md:min-h-0 text-sm text-left rounded-3xl">+254 703 739 265</a>
               <a className="hover:text-primary transition-colors break-all" href="mailto:contact@mjinicollection.com">​contact@mjinicollection.com</a>
             </div>
             <div className="flex items-center gap-4">
@@ -55,10 +55,10 @@ const Footer = () => {
 
           {/* Copyright */}
           <div className="col-span-2 md:col-span-1 pt-3 md:pt-0 border-t border-border/10 md:border-0">
-            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.15em]">
+            <p className="text-muted-foreground uppercase tracking-[0.15em] text-sm font-serif text-center">
               © {new Date().getFullYear()} Mjini Collections
             </p>
-            <p className="text-[10px] text-muted-foreground mt-1">Made with 💕 in Kenya</p>
+            <p className="text-muted-foreground mt-1 text-center text-sm">Made with 💕 in Kenya</p>
           </div>
         </div>
       </div>

@@ -18,32 +18,32 @@ const CategoryFilter = ({ categories, selectedCategory, onSelect, productCount }
   return (
     <section className="py-3 md:py-4 bg-background sticky top-[85px] md:top-[105px] z-40 border-b border-border/50">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between gap-3">
+        <div className="gap-3 items-end justify-between flex flex-row">
           <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant="ghost"
-                size="sm"
-                className={`rounded-none px-4 md:px-5 h-10 min-h-[44px] font-body text-xs uppercase tracking-[0.12em] md:tracking-[0.15em] transition-all duration-300 shrink-0 ${
-                  selectedCategory === category.id
-                    ? "bg-accent text-accent-foreground border border-primary/30"
-                    : "bg-transparent text-muted-foreground hover:text-foreground border border-transparent hover:border-border"
-                }`}
-                onClick={() => onSelect(category.id)}
-              >
+            {categories.map((category) =>
+            <Button
+              key={category.id}
+              variant="ghost"
+              size="sm"
+              className={`rounded-none px-4 md:px-5 h-10 min-h-[44px] font-body text-xs uppercase tracking-[0.12em] md:tracking-[0.15em] transition-all duration-300 shrink-0 ${
+              selectedCategory === category.id ?
+              "bg-accent text-accent-foreground border border-primary/30" :
+              "bg-transparent text-muted-foreground hover:text-foreground border border-transparent hover:border-border"}`
+              }
+              onClick={() => onSelect(category.id)}>
+              
                 <span className="mr-1.5 text-sm">{category.icon}</span>
                 {category.name}
               </Button>
-            ))}
+            )}
           </div>
           <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-body shrink-0">
             {productCount} {productCount === 1 ? "item" : "items"}
           </p>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default CategoryFilter;
