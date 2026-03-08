@@ -195,6 +195,7 @@ const AdminProducts = () => {
                       <SelectContent>
                         <SelectItem value="shoes">Shoes</SelectItem>
                         <SelectItem value="beauty">Beauty</SelectItem>
+                        <SelectItem value="accessories">Accessories</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
