@@ -199,7 +199,18 @@ const AdminProducts = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div><Label>Subcategory</Label><Input value={form.subcategory} onChange={(e) => setForm({ ...form, subcategory: e.target.value })} /></div>
+                  <div>
+                    <Label>Subcategory</Label>
+                    <Select value={form.subcategory || ""} onValueChange={(v) => setForm({ ...form, subcategory: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="women">Women</SelectItem>
+                        <SelectItem value="men">Men</SelectItem>
+                        <SelectItem value="kids">Kids</SelectItem>
+                        <SelectItem value="unisex">Unisex</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>Price (KES)</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></div>
