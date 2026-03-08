@@ -20,6 +20,7 @@ import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import Account from "./pages/Account";
 import PaymentCallback from "./pages/PaymentCallback";
+import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
