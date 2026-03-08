@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+import { useDeliveryFee } from "@/hooks/useDeliveryFee";
 
 const Checkout = () => {
   const { user } = useAuth();
