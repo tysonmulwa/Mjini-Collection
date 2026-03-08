@@ -190,6 +190,7 @@ const ProductDetail = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
