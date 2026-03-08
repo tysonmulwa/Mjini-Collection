@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import PageTransition from "@/components/store/PageTransition";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";

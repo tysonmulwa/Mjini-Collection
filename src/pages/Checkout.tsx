@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageTransition from "@/components/store/PageTransition";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";

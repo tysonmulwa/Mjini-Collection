@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import PageTransition from "@/components/store/PageTransition";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
