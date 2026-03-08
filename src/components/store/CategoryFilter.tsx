@@ -175,6 +175,30 @@ const CategoryFilter = ({
                   </div>
                 </div>
 
+                {/* Shoe Type */}
+                {(selectedCategory === "all" || selectedCategory === "shoes" || selectedCategory === "men-shoes") && (
+                  <div>
+                    <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Shoe Type</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {shoeTypeOptions.map((opt) => (
+                        <Button
+                          key={opt.value}
+                          variant="outline"
+                          size="sm"
+                          className={`h-9 text-xs font-body ${
+                            selectedShoeType === opt.value
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "text-muted-foreground"
+                          }`}
+                          onClick={() => onShoeTypeChange(opt.value)}
+                        >
+                          {opt.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Status */}
                 <div>
                   <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Status</h4>

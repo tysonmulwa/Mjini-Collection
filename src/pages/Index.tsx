@@ -153,6 +153,8 @@ const Index = () => {
           onGenderChange={setSelectedGender}
           selectedStatus={selectedStatus}
           onStatusChange={setSelectedStatus}
+          selectedShoeType={selectedShoeType}
+          onShoeTypeChange={setSelectedShoeType}
         />
 
         <section className="py-10 md:py-24">
