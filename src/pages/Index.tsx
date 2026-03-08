@@ -117,19 +117,16 @@ const Index = () => {
             {loading ?
             <ProductGridSkeleton /> :
 
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-50px" }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 border-none">
+            <div
+              key={selectedCategory}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 border-none animate-fade-in">
               
                 {filteredProducts.map((product) =>
-              <motion.div key={product.id} variants={fadeUp}>
+                  <div key={product.id}>
                     <ProductCard product={product} />
-                  </motion.div>
+                  </div>
               )}
-              </motion.div>
+              </div>
             }
 
             {!loading && filteredProducts.length === 0 &&
