@@ -68,6 +68,7 @@ const CategoryFilter = ({
   const activeFilterCount = [
     selectedGender !== "all" ? 1 : 0,
     selectedStatus !== "all" ? 1 : 0,
+    selectedShoeType !== "all" ? 1 : 0,
     sortBy !== "newest" ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
