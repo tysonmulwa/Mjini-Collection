@@ -52,19 +52,19 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          <div className="absolute top-2 left-2 md:top-3 md:left-3 flex flex-col gap-1.5">
             {product.is_new && (
-              <Badge className="bg-primary text-primary-foreground border-0 text-[9px] font-body font-semibold uppercase tracking-[0.15em] px-3 py-1 rounded-none">
+              <Badge className="bg-primary text-primary-foreground border-0 text-[8px] md:text-[9px] font-body font-semibold uppercase tracking-[0.15em] px-2 md:px-3 py-0.5 md:py-1 rounded-none">
                 New
               </Badge>
             )}
             {product.on_sale && (
-              <Badge className="bg-accent text-accent-foreground border-0 text-[9px] font-body font-semibold px-3 py-1 rounded-none">
+              <Badge className="bg-accent text-accent-foreground border-0 text-[8px] md:text-[9px] font-body font-semibold px-2 md:px-3 py-0.5 md:py-1 rounded-none">
                 -{discount}%
               </Badge>
             )}
             {!product.in_stock && (
-              <Badge className="bg-muted text-muted-foreground border-0 text-[9px] font-body font-semibold px-3 py-1 rounded-none">
+              <Badge className="bg-muted text-muted-foreground border-0 text-[8px] md:text-[9px] font-body font-semibold px-2 md:px-3 py-0.5 md:py-1 rounded-none">
                 Sold Out
               </Badge>
             )}
@@ -75,13 +75,13 @@ const ProductCard = ({ product }: ProductCardProps) => {
             variant="ghost"
             size="icon"
             onClick={handleWishlist}
-            className="absolute top-3 right-3 w-9 h-9 bg-card/90 backdrop-blur-sm hover:bg-card border border-border/30 rounded-none hover:scale-105 transition-all duration-300"
+            className="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-9 md:h-9 min-h-[44px] min-w-[44px] bg-card/90 backdrop-blur-sm hover:bg-card border border-border/30 rounded-none transition-all duration-300"
           >
-            <Heart className={`w-4 h-4 transition-all duration-300 ${wishlisted ? "fill-primary text-primary" : "text-foreground"}`} />
+            <Heart className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-all duration-300 ${wishlisted ? "fill-primary text-primary" : "text-foreground"}`} />
           </Button>
 
-          {/* Add to cart */}
-          <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400">
+          {/* Add to cart — hidden on mobile, shown on hover for desktop */}
+          <div className="absolute bottom-3 left-3 right-3 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400 hidden md:block">
             <Button
               onClick={handleAddToCart}
               disabled={!product.in_stock}
@@ -94,18 +94,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </div>
 
         {/* Info */}
-        <div className="p-4">
-          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-1.5">{product.subcategory}</p>
-          <h3 className="font-display font-semibold text-card-foreground text-sm mb-2.5 leading-snug group-hover:text-primary transition-colors duration-300 line-clamp-1">
+        <div className="p-3 md:p-4">
+          <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-1 md:mb-1.5">{product.subcategory}</p>
+          <h3 className="font-display font-semibold text-card-foreground text-xs md:text-sm mb-2 md:mb-2.5 leading-snug group-hover:text-primary transition-colors duration-300 line-clamp-2 md:line-clamp-1">
             {product.name}
           </h3>
 
-          <div className="flex items-center gap-1.5 mb-3">
+          <div className="flex items-center gap-1 mb-2 md:mb-3">
             <div className="flex items-center gap-0.5">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-3 h-3 ${
+                  className={`w-2.5 h-2.5 md:w-3 md:h-3 ${
                     i < Math.floor(product.rating || 0)
                       ? "fill-primary text-primary"
                       : "fill-muted text-muted"
@@ -113,15 +113,26 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 />
               ))}
             </div>
-            <span className="text-[10px] text-muted-foreground font-body">({product.review_count})</span>
+            <span className="text-[9px] md:text-[10px] text-muted-foreground font-body">({product.review_count})</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-base font-display font-bold text-card-foreground">{formatPrice(product.price)}</span>
+          <div className="flex items-baseline gap-2">
+            <span className="text-sm md:text-base font-display font-bold text-card-foreground">{formatPrice(product.price)}</span>
             {product.on_sale && (
-              <span className="text-xs text-muted-foreground line-through font-body">{formatPrice(product.original_price)}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground line-through font-body">{formatPrice(product.original_price)}</span>
             )}
           </div>
+
+          {/* Mobile add to cart button */}
+          <Button
+            onClick={handleAddToCart}
+            disabled={!product.in_stock}
+            size="sm"
+            className="w-full mt-2.5 md:hidden gradient-brand text-primary-foreground rounded-none font-body font-semibold text-[11px] tracking-wider uppercase h-9 min-h-[40px]"
+          >
+            <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
+            {product.in_stock ? "Add to Bag" : "Sold Out"}
+          </Button>
         </div>
       </div>
     </Link>

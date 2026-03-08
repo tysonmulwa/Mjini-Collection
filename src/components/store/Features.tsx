@@ -1,4 +1,5 @@
 import { Truck, CreditCard, RotateCcw, Headphones } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   { icon: Truck, title: "Free Delivery", description: "Free within Nairobi for orders over KES 3,000" },
@@ -9,29 +10,38 @@ const features = [
 
 const Features = () => {
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-12 md:py-20 bg-secondary/30">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-14">
-          <div className="w-12 h-px bg-primary mx-auto mb-6" />
-          <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body font-medium mb-3">Why Choose Us</p>
-          <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="text-center mb-8 md:mb-14"
+        >
+          <div className="w-12 h-px bg-primary mx-auto mb-4 md:mb-6" />
+          <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body font-medium mb-2 md:mb-3">Why Choose Us</p>
+          <h2 className="text-xl md:text-4xl font-display font-bold text-foreground">
             Shopping Made <span className="italic text-primary">Effortless</span>
           </h2>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8">
           {features.map((feature, i) => (
-            <div
+            <motion.div
               key={feature.title}
-              className="group text-center p-6 border border-border/50 bg-card hover:border-primary/20 transition-all duration-500 animate-fade-in"
-              style={{ animationDelay: `${i * 0.1}s` }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="group text-center p-4 md:p-6 border border-border/50 bg-card hover:border-primary/20 transition-all duration-500"
             >
-              <div className="w-12 h-12 border border-primary/30 flex items-center justify-center mx-auto mb-5 group-hover:bg-primary/5 transition-colors duration-300">
-                <feature.icon className="w-5 h-5 text-primary" />
+              <div className="w-10 h-10 md:w-12 md:h-12 border border-primary/30 flex items-center justify-center mx-auto mb-3 md:mb-5 group-hover:bg-primary/5 transition-colors duration-300">
+                <feature.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
               </div>
-              <h3 className="font-display font-semibold text-foreground text-sm mb-2">{feature.title}</h3>
-              <p className="text-xs text-muted-foreground font-body leading-relaxed">{feature.description}</p>
-            </div>
+              <h3 className="font-display font-semibold text-foreground text-xs md:text-sm mb-1.5 md:mb-2">{feature.title}</h3>
+              <p className="text-[11px] md:text-xs text-muted-foreground font-body leading-relaxed">{feature.description}</p>
+            </motion.div>
           ))}
         </div>
       </div>
