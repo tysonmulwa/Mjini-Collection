@@ -20,6 +20,7 @@ import Checkout from "./pages/Checkout";
 import Orders from "./pages/Orders";
 import Account from "./pages/Account";
 import PaymentCallback from "./pages/PaymentCallback";
+import Wishlist from "./pages/Wishlist";
 import NotFound from "./pages/NotFound";
 import AdminLayout from "./pages/admin/AdminLayout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -44,6 +45,7 @@ const AnimatedRoutes = () => {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/payment-callback" element={<PaymentCallback />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminDashboard />} />
