@@ -9,11 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ArrowLeft, CheckCircle, Loader2 } from "lucide-react";
+import { useDeliveryFee } from "@/hooks/useDeliveryFee";
 
 const Checkout = () => {
   const { user } = useAuth();
   const { items, total, clearCart } = useCart();
   const navigate = useNavigate();
+  const { getDeliveryFee, loading: feeLoading } = useDeliveryFee();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [whatsappLink, setWhatsappLink] = useState("");
@@ -47,7 +49,7 @@ const Checkout = () => {
     );
   }
 
-  const deliveryFee = total >= 3000 ? 0 : 300;
+  const deliveryFee = getDeliveryFee(total);
   const grandTotal = total + deliveryFee;
   const formatPrice = (price: number) => `KES ${price.toLocaleString()}`;
 
