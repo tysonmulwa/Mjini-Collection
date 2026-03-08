@@ -76,6 +76,7 @@ const ProductDetail = () => {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground font-body mb-6">
