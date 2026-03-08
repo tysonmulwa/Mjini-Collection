@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import PageTransition from "@/components/store/PageTransition";
+import ProductReviews from "@/components/store/ProductReviews";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
@@ -179,6 +180,11 @@ const ProductDetail = () => {
               <p>💳 Pay via M-Pesa or Cash on Delivery</p>
               <p>🔄 30-day return policy</p>
             </div>
+          </div>
+
+          {/* Reviews */}
+          <div className="md:col-span-2">
+            <ProductReviews productId={product.id} />
           </div>
         </div>
       </div>
