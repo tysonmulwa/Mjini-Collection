@@ -5,10 +5,10 @@ import { Package, ShoppingBag, LayoutDashboard, ArrowLeft, LogOut } from "lucide
 import { Button } from "@/components/ui/button";
 
 const navItems = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/products", label: "Products", icon: Package },
-  { to: "/admin/orders", label: "Orders", icon: ShoppingBag },
-];
+{ to: "/admin", label: "Dashboard", icon: LayoutDashboard },
+{ to: "/admin/products", label: "Products", icon: Package },
+{ to: "/admin/orders", label: "Orders", icon: ShoppingBag }];
+
 
 const AdminLayout = () => {
   const { isAdmin, loading } = useAdmin();
@@ -20,8 +20,8 @@ const AdminLayout = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+      </div>);
+
   }
 
   if (!user) {
@@ -32,8 +32,8 @@ const AdminLayout = () => {
           <p className="text-muted-foreground">Please sign in to access the admin dashboard.</p>
           <Button onClick={() => navigate("/login")} className="gradient-brand text-primary-foreground">Sign In</Button>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   if (!isAdmin) {
@@ -44,8 +44,8 @@ const AdminLayout = () => {
           <p className="text-muted-foreground">You don't have admin privileges.</p>
           <Link to="/"><Button variant="outline">Back to Store</Button></Link>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -55,11 +55,11 @@ const AdminLayout = () => {
         <div className="p-5 border-b border-border">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 gradient-brand rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-display font-bold text-lg">M</span>
+              <span className="text-primary-foreground font-display text-2xl font-extrabold">​T</span>
             </div>
             <div>
-              <h1 className="text-base font-display font-bold text-foreground leading-tight">Mjini Admin</h1>
-              <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground">Dashboard</p>
+              <h1 className="text-base font-display font-bold text-foreground leading-tight">​TYSON-Admin </h1>
+              
             </div>
           </Link>
         </div>
@@ -71,15 +71,15 @@ const AdminLayout = () => {
                 key={item.to}
                 to={item.to}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
-                  active
-                    ? "bg-primary/10 text-primary font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                }`}
-              >
+                active ?
+                "bg-primary/10 text-primary font-semibold" :
+                "text-muted-foreground hover:text-foreground hover:bg-muted"}`
+                }>
+                
                 <item.icon className="w-4 h-4" />
                 {item.label}
-              </Link>
-            );
+              </Link>);
+
           })}
         </nav>
         <div className="p-3 border-t border-border space-y-1">
@@ -105,8 +105,8 @@ const AdminLayout = () => {
                   <Button variant={active ? "default" : "ghost"} size="icon" className={active ? "gradient-brand text-primary-foreground" : ""}>
                     <item.icon className="w-4 h-4" />
                   </Button>
-                </Link>
-              );
+                </Link>);
+
             })}
           </div>
         </header>
@@ -114,8 +114,8 @@ const AdminLayout = () => {
           <Outlet />
         </main>
       </div>
-    </div>
-  );
+    </div>);
+
 };
 
 export default AdminLayout;
