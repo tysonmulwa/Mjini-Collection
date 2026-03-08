@@ -34,19 +34,19 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
       <div className="bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="container mx-auto px-4 py-3 md:py-4">
           <div className="flex items-center justify-between gap-3">
-            {/* Mobile menu toggle */}
-            <Button variant="ghost" size="icon" className="md:hidden h-10 w-10 min-h-[44px] min-w-[44px]" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
-
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-              <img src={logo} alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 rounded object-cover" />
+            {/* Logo — always left */}
+            <Link to="/" className="flex items-center gap-2.5 shrink-0 group order-first">
+              <img src={logo} alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 rounded object-cover dark:brightness-110 dark:contrast-105" />
               <div className="hidden sm:block">
                 <h1 className="text-lg font-display font-bold text-foreground leading-none tracking-wide">Mjini</h1>
                 <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-body mt-0.5">Collections</p>
               </div>
             </Link>
+
+            {/* Mobile menu toggle */}
+            <Button variant="ghost" size="icon" className="md:hidden h-10 w-10 min-h-[44px] min-w-[44px] ml-auto" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
 
             {/* Desktop search */}
             <div className="hidden md:flex flex-1 max-w-md mx-8">
