@@ -71,6 +71,22 @@ const Cart = () => {
               ))}
             </div>
 
+            {/* Delivery info banner */}
+            {delivery.free_threshold > 0 && total < delivery.free_threshold && (
+              <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl p-3 mb-4">
+                <Truck className="w-4 h-4 text-primary shrink-0" />
+                <p className="text-xs font-body text-foreground">
+                  Add <span className="font-bold text-primary">{formatPrice(delivery.free_threshold - total)}</span> more for free delivery!
+                </p>
+              </div>
+            )}
+            {delivery.free_threshold > 0 && total >= delivery.free_threshold && (
+              <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl p-3 mb-4">
+                <Truck className="w-4 h-4 text-primary shrink-0" />
+                <p className="text-xs font-body text-foreground font-semibold">🎉 You qualify for free delivery!</p>
+              </div>
+            )}
+
             {/* Summary */}
             <div className="bg-card rounded-xl border border-border p-6">
               <div className="flex justify-between mb-2 text-sm font-body">
@@ -79,11 +95,11 @@ const Cart = () => {
               </div>
               <div className="flex justify-between mb-4 text-sm font-body">
                 <span className="text-muted-foreground">Delivery</span>
-                <span className="font-semibold">{total >= 3000 ? "Free" : formatPrice(300)}</span>
+                <span className="font-semibold">{getDeliveryFee(total) === 0 ? "Free" : formatPrice(getDeliveryFee(total))}</span>
               </div>
               <div className="border-t border-border pt-4 flex justify-between font-body">
                 <span className="font-semibold">Total</span>
-                <span className="text-lg font-bold">{formatPrice(total + (total >= 3000 ? 0 : 300))}</span>
+                <span className="text-lg font-bold">{formatPrice(total + getDeliveryFee(total))}</span>
               </div>
               <Link to="/checkout">
                 <Button className="w-full gradient-brand text-primary-foreground rounded-xl font-body font-semibold mt-6 py-3">
