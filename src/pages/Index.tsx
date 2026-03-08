@@ -18,15 +18,6 @@ const categories = [
 { id: "beauty", name: "Beauty", icon: "💄" }];
 
 
-const stagger = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } }
-};
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } }
-};
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -126,19 +117,16 @@ const Index = () => {
             {loading ?
             <ProductGridSkeleton /> :
 
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, margin: "-50px" }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 border-none">
+            <div
+              key={selectedCategory}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 border-none animate-fade-in">
               
                 {filteredProducts.map((product) =>
-              <motion.div key={product.id} variants={fadeUp}>
+                  <div key={product.id}>
                     <ProductCard product={product} />
-                  </motion.div>
+                  </div>
               )}
-              </motion.div>
+              </div>
             }
 
             {!loading && filteredProducts.length === 0 &&
