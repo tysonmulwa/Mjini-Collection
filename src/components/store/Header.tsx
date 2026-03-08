@@ -69,6 +69,12 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
 
               <ThemeToggle />
 
+              <Link to="/wishlist">
+                <Button variant="ghost" size="icon" className="relative h-10 w-10 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-primary transition-colors">
+                  <Heart className="w-5 h-5" />
+                </Button>
+              </Link>
+
               <Link to="/cart">
                 <Button variant="ghost" size="icon" className="relative h-10 w-10 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-primary transition-colors">
                   <ShoppingCart className="w-5 h-5" />
