@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface HeaderProps {
@@ -19,14 +20,19 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   const [searchOpen, setSearchOpen] = useState(false);
   const { user, signOut } = useAuth();
   const { itemCount } = useCart();
+  const { delivery, storeInfo } = useStoreSettings();
 
   return (
     <header className="sticky top-0 z-50">
       {/* Top bar */}
       <div className="text-[10px] py-1.5 md:py-2 border-b border-border/10 bg-secondary text-primary">
         <div className="container mx-auto px-4 flex-row flex items-start justify-between">
-          <span className="font-body tracking-[0.1em] uppercase truncate font-serif font-bold text-center">   Free delivery in Nairobi for orders over KES 3,000</span>
-          <a href="tel:+254703739265" className="hidden sm:block font-body tracking-[0.1em] hover:text-primary transition-colors">+254 703 739 265</a>
+          <span className="font-body tracking-[0.1em] uppercase truncate font-serif font-bold text-center">
+            {delivery.free_threshold > 0
+              ? `   Free delivery in Nairobi for orders over KES ${delivery.free_threshold.toLocaleString()}`
+              : "   Fast delivery across Nairobi"}
+          </span>
+          <a href={`tel:${storeInfo.phone.replace(/\s/g, "")}`} className="hidden sm:block font-body tracking-[0.1em] hover:text-primary transition-colors">{storeInfo.phone}</a>
         </div>
       </div>
 
