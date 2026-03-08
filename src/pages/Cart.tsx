@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import PageTransition from "@/components/store/PageTransition";
 import { useCart } from "@/contexts/CartContext";
+import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag, Truck } from "lucide-react";
 
 const Cart = () => {
   const { items, loading, itemCount, total, updateQuantity, removeItem } = useCart();
+  const { delivery, getDeliveryFee } = useStoreSettings();
 
   const formatPrice = (price: number) => `KES ${price.toLocaleString()}`;
 
