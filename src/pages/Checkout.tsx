@@ -49,7 +49,7 @@ const Checkout = () => {
     );
   }
 
-  const deliveryFee = total >= 3000 ? 0 : 300;
+  const deliveryFee = getDeliveryFee(total);
   const grandTotal = total + deliveryFee;
   const formatPrice = (price: number) => `KES ${price.toLocaleString()}`;
 

@@ -51,6 +51,10 @@ const AdminDashboard = () => {
           </Card>
         ))}
       </div>
+
+      <div className="mt-8">
+        <DeliveryFeeSettings />
+      </div>
     </div>
   );
 };
