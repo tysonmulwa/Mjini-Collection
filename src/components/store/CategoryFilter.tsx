@@ -75,6 +75,7 @@ const CategoryFilter = ({
   const clearAll = () => {
     onGenderChange("all");
     onStatusChange("all");
+    onShoeTypeChange("all");
     onSortChange("newest");
   };
 
