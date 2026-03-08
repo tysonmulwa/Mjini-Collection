@@ -136,6 +136,7 @@ const AdminProducts = () => {
 
     const payload = {
       name: form.name, category: form.category, subcategory: form.subcategory || form.category,
+      shoe_type: form.shoe_type || null,
       price: form.price, original_price: form.original_price || form.price, image: primaryImage,
       images: allImageUrls,
       description: form.description || null, sizes: form.sizes.length ? form.sizes : null,
