@@ -181,6 +181,11 @@ const ProductDetail = () => {
               <p>🔄 30-day return policy</p>
             </div>
           </div>
+
+          {/* Reviews */}
+          <div className="md:col-span-2">
+            <ProductReviews productId={product.id} />
+          </div>
         </div>
       </div>
     </div>
