@@ -162,6 +162,7 @@ export type Database = {
           price: number
           rating: number | null
           review_count: number | null
+          shoe_type: string | null
           sizes: string[] | null
           subcategory: string
           updated_at: string
@@ -182,6 +183,7 @@ export type Database = {
           price: number
           rating?: number | null
           review_count?: number | null
+          shoe_type?: string | null
           sizes?: string[] | null
           subcategory: string
           updated_at?: string
@@ -202,6 +204,7 @@ export type Database = {
           price?: number
           rating?: number | null
           review_count?: number | null
+          shoe_type?: string | null
           sizes?: string[] | null
           subcategory?: string
           updated_at?: string
