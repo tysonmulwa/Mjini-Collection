@@ -37,9 +37,6 @@ const CategoryFilter = ({ categories, selectedCategory, onSelect, productCount }
               </Button>
             )}
           </div>
-          <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-body shrink-0 text-center">
-            {productCount} {productCount === 1 ? "item" : "items"}
-          </p>
         </div>
       </div>
     </section>);
