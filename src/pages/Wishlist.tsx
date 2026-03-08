@@ -44,7 +44,7 @@ const Wishlist = () => {
 
   return (
     <PageTransition>
-      <Header />
+      <Header searchQuery="" onSearchChange={() => {}} />
       <div className="min-h-screen bg-background">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-2xl font-display font-bold text-foreground mb-6 flex items-center gap-2">
