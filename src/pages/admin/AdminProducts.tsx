@@ -17,7 +17,7 @@ type Product = Tables<"products">;
 const MAX_IMAGES = 5;
 
 const emptyProduct = {
-  name: "", category: "shoes", subcategory: "", price: 0, original_price: 0,
+  name: "", category: "shoes", subcategory: "", shoe_type: "", price: 0, original_price: 0,
   image: "", images: [] as string[], description: "", sizes: [] as string[], colors: [] as string[],
   in_stock: true, is_new: false, on_sale: false,
 };
