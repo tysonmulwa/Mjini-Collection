@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, ShoppingBag, DollarSign, Users } from "lucide-react";
-import DeliveryFeeSettings from "@/components/admin/DeliveryFeeSettings";
+import { DeliveryFeeSettings, StoreInfoSettings } from "@/components/admin/DeliveryFeeSettings";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({ products: 0, orders: 0, revenue: 0, pending: 0 });
