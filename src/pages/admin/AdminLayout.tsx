@@ -96,7 +96,7 @@ const AdminLayout = () => {
       <div className="flex-1 flex flex-col">
         <header className="md:hidden flex items-center justify-between p-4 border-b border-border bg-card">
           <Link to="/" className="text-sm text-muted-foreground flex items-center gap-1"><ArrowLeft className="w-4 h-4" /> Store</Link>
-          <span className="font-display font-bold text-foreground">Admin</span>
+          <span className="font-display font-bold text-foreground">​TYSON</span>
           <div className="flex gap-1">
             {navItems.map((item) => {
               const active = location.pathname === item.to;
