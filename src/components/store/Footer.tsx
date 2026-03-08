@@ -17,17 +17,17 @@ const Footer = () => {
               <a href="tel:+254703739265" className="hover:text-primary transition-colors min-h-[44px] flex items-center md:min-h-0 text-sm text-left rounded-3xl">+254 703 739 265</a>
               <a className="hover:text-primary transition-colors break-all" href="mailto:contact@mjinicollection.com">​contact@mjinicollection.com</a>
             </div>
-            <div className="flex items-center gap-4">
-              <a href="https://www.instagram.com/mjini_collection?igsh=dm1rYnF6dnVqdjJi&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5" aria-label="Instagram">
+            <div className="flex-row flex items-center justify-start gap-[30px] rounded-xl">
+              <a href="https://www.instagram.com/mjini_collection?igsh=dm1rYnF6dnVqdjJi&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5 rounded-full" aria-label="Instagram">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://www.tiktok.com/@mjinicollection?_r=1&_t=ZS-94Uw3Xodoqf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5" aria-label="TikTok">
+              <a href="https://www.tiktok.com/@mjinicollection?_r=1&_t=ZS-94Uw3Xodoqf" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5 rounded-full" aria-label="TikTok">
                 <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78c.27 0 .54.04.8.1v-3.5a6.37 6.37 0 0 0-.8-.05A6.34 6.34 0 0 0 3.15 15.3 6.34 6.34 0 0 0 9.49 21.64a6.34 6.34 0 0 0 6.34-6.34V8.7a8.16 8.16 0 0 0 3.76.92V6.69Z" /></svg>
               </a>
-              <a href="https://wa.me/254703739265" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5" aria-label="WhatsApp">
+              <a href="https://wa.me/254703739265" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5 rounded-full" aria-label="WhatsApp">
                 <MessageCircle className="w-5 h-5" />
               </a>
-              <a href="https://www.facebook.com/mjinicollections" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5" aria-label="Facebook">
+              <a href="https://www.facebook.com/mjinicollections" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors p-1.5 -m-1.5 rounded-full" aria-label="Facebook">
                 <Facebook className="w-5 h-5" />
               </a>
             </div>

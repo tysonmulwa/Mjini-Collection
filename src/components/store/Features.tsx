@@ -36,11 +36,11 @@ const Features = () => {
             transition={{ duration: 0.4, delay: i * 0.08 }}
             className="group text-center p-4 md:p-6 border-border/50 bg-card hover:border-primary/20 transition-all duration-500 py-0 px-0 border-0 rounded-2xl">
             
-              <div className="w-10 h-10 md:w-12 md:h-12 border border-primary/30 flex items-center justify-center mx-auto mb-3 md:mb-5 group-hover:bg-primary/5 transition-colors duration-300">
-                <feature.icon className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+              <div className="w-10 h-10 md:w-12 md:h-12 border border-primary/30 mx-auto mb-3 md:mb-5 group-hover:bg-primary/5 transition-colors duration-300 flex items-end justify-center opacity-100 rounded-full">
+                <feature.icon className="text-primary md:w-[20px] md:h-[20px] h-[29px] w-[25px]" />
               </div>
-              <h3 className="font-display font-semibold text-foreground text-xs md:text-sm mb-1.5 md:mb-2">{feature.title}</h3>
-              <p className="text-[11px] md:text-xs text-muted-foreground font-body leading-relaxed">{feature.description}</p>
+              <h3 className="font-display font-semibold text-foreground md:text-sm mb-1.5 md:mb-2 text-sm">{feature.title}</h3>
+              <p className="md:text-xs text-muted-foreground font-body leading-relaxed text-sm font-normal">{feature.description}</p>
             </motion.div>
           )}
         </div>

@@ -75,7 +75,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             variant="ghost"
             size="icon"
             onClick={handleWishlist}
-            className="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-9 md:h-9 min-h-[44px] min-w-[44px] bg-card/90 backdrop-blur-sm hover:bg-card border border-border/30 rounded-none transition-all duration-300">
+            className="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-9 md:h-9 min-h-[44px] min-w-[44px] backdrop-blur-sm border border-border/30 transition-all duration-300 rounded-full bg-secondary">
             
             <Heart className={`w-3.5 h-3.5 md:w-4 md:h-4 transition-all duration-300 ${wishlisted ? "fill-primary text-primary" : "text-foreground"}`} />
           </Button>
@@ -95,8 +95,8 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
         {/* Info */}
         <div className="p-3 md:p-4 rounded-none px-0 py-0">
-          <p className="text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-body font-medium mb-1 md:mb-1.5">{product.subcategory}</p>
-          <h3 className="font-display font-semibold text-card-foreground text-xs md:text-sm mb-2 md:mb-2.5 leading-snug group-hover:text-primary transition-colors duration-300 line-clamp-2 md:line-clamp-1">
+          <p className="md:text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-body mb-1 md:mb-1.5 text-sm font-sans font-bold text-center">{product.subcategory}</p>
+          <h3 className="font-display font-semibold text-card-foreground md:text-sm mb-2 md:mb-2.5 leading-snug group-hover:text-primary transition-colors duration-300 line-clamp-2 md:line-clamp-1 text-sm font-serif text-center">
             {product.name}
           </h3>
 

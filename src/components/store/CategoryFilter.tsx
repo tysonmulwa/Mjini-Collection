@@ -18,7 +18,7 @@ const CategoryFilter = ({ categories, selectedCategory, onSelect, productCount }
   return (
     <section className="py-3 md:py-4 bg-background sticky top-[85px] md:top-[105px] z-40 border-b border-border/50">
       <div className="container mx-auto px-4">
-        <div className="gap-3 items-end justify-between flex flex-row">
+        <div className="gap-3 flex-row flex items-center justify-between rounded-2xl">
           <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
             {categories.map((category) =>
             <Button
@@ -37,7 +37,7 @@ const CategoryFilter = ({ categories, selectedCategory, onSelect, productCount }
               </Button>
             )}
           </div>
-          <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-body shrink-0">
+          <p className="text-[10px] uppercase tracking-[0.15em] text-muted-foreground font-body shrink-0 text-center">
             {productCount} {productCount === 1 ? "item" : "items"}
           </p>
         </div>

@@ -89,13 +89,13 @@ const Index = () => {
               
                 <button
                 onClick={() => setSelectedCategory("shoes")}
-                className="px-6 py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-semibold transition-all duration-300 active:scale-[0.97] text-left rounded-3xl opacity-100">
+                className="px-6 py-3 min-h-[44px] font-body text-sm font-semibold transition-all duration-300 active:scale-[0.97] text-left rounded-3xl opacity-100 text-secondary-foreground bg-primary">
                 
                   Shop Shoes
                 </button>
                 <button
                 onClick={() => setSelectedCategory("beauty")}
-                className="px-6 py-3 min-h-[44px] bg-transparent border border-primary text-primary font-body text-sm font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300 active:scale-[0.97] text-left rounded-3xl">
+                className="px-6 py-3 min-h-[44px] bg-transparent border border-primary text-primary font-body text-sm font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300 active:scale-[0.97] rounded-3xl text-left">
                 
                   Beauty Products
                 </button>
