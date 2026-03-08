@@ -240,10 +240,41 @@ const AdminProducts = () => {
                   </div>
                   {form.category && form.subcategory && (
                     <p className="text-xs text-primary font-medium mt-2">
-                      ✓ {form.subcategory === "men" ? "Men's" : form.subcategory === "women" ? "Women's" : form.subcategory === "kids" ? "Kids'" : "Unisex"} {form.category}
+                      ✓ {form.subcategory === "men" ? "Men's" : form.subcategory === "women" ? "Women's" : form.subcategory === "kids" ? "Kids'" : "Unisex"} {form.category}{form.shoe_type ? ` — ${form.shoe_type}` : ""}
                     </p>
                   )}
                 </div>
+
+                {form.category === "shoes" && (
+                  <div>
+                    <Label className="mb-2 block">Shoe Type</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { value: "sneakers", label: "👟 Sneakers" },
+                        { value: "heels", label: "👠 Heels" },
+                        { value: "boots", label: "🥾 Boots" },
+                        { value: "sandals", label: "🩴 Sandals" },
+                        { value: "loafers", label: "👞 Loafers" },
+                        { value: "flats", label: "🥿 Flats" },
+                        { value: "slides", label: "🩰 Slides" },
+                        { value: "formal", label: "👔 Formal" },
+                      ].map((type) => (
+                        <button
+                          key={type.value}
+                          type="button"
+                          onClick={() => setForm({ ...form, shoe_type: form.shoe_type === type.value ? "" : type.value })}
+                          className={`px-4 py-2 rounded-lg border text-sm font-body transition-all ${
+                            form.shoe_type === type.value
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border text-foreground hover:border-primary"
+                          }`}
+                        >
+                          {type.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>Price (KES)</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></div>
                   <div><Label>Original Price</Label><Input type="number" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: +e.target.value })} /></div>
