@@ -176,6 +176,7 @@ const Checkout = () => {
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         <Link to="/cart" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground font-body mb-6">
