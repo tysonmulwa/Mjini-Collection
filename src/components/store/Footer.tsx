@@ -10,7 +10,7 @@ const Footer = () => {
           {/* Brand & Contact */}
           <div className="col-span-2 md:col-span-1">
             <div className="mb-3 flex-row flex items-center justify-start gap-[5px]">
-              <img src={logo} alt="Mjini Collections" className="w-6 h-6 object-cover rounded-full" />
+              <img alt="Mjini Collections" className="w-6 h-6 object-cover rounded-full" src="/lovable-uploads/70eacf1f-7570-4034-8530-b08ca3b82ee7.png" />
               <span className="font-bold text-foreground text-sm">Mjini Collection </span>
             </div>
             <div className="flex flex-col gap-1.5 text-xs text-muted-foreground mb-3">
