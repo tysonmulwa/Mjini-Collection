@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SlidersHorizontal } from "lucide-react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { SlidersHorizontal, X } from "lucide-react";
 import { useState } from "react";
 
 interface Category {
@@ -22,16 +22,49 @@ interface CategoryFilterProps {
   onStatusChange: (value: string) => void;
 }
 
+const genderOptions = [
+  { value: "all", label: "All" },
+  { value: "men", label: "Men" },
+  { value: "women", label: "Women" },
+  { value: "kids", label: "Kids" },
+  { value: "unisex", label: "Unisex" },
+];
+
+const statusOptions = [
+  { value: "all", label: "All" },
+  { value: "new", label: "New Arrivals" },
+  { value: "on_sale", label: "On Sale" },
+  { value: "in_stock", label: "In Stock" },
+];
+
+const sortOptions = [
+  { value: "newest", label: "Newest" },
+  { value: "price_low", label: "Price: Low → High" },
+  { value: "price_high", label: "Price: High → Low" },
+  { value: "name_az", label: "Name: A → Z" },
+];
+
 const CategoryFilter = ({
   categories, selectedCategory, onSelect, productCount,
   sortBy, onSortChange, selectedGender, onGenderChange, selectedStatus, onStatusChange
 }: CategoryFilterProps) => {
-  const [showFilters, setShowFilters] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const activeFilterCount = [
+    selectedGender !== "all" ? 1 : 0,
+    selectedStatus !== "all" ? 1 : 0,
+    sortBy !== "newest" ? 1 : 0,
+  ].reduce((a, b) => a + b, 0);
+
+  const clearAll = () => {
+    onGenderChange("all");
+    onStatusChange("all");
+    onSortChange("newest");
+  };
 
   return (
     <section className="py-3 md:py-4 bg-background sticky top-[85px] md:top-[105px] z-40 border-b border-border/50">
       <div className="container mx-auto px-4">
-        {/* Categories row */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 md:gap-2 overflow-x-auto no-scrollbar -mx-1 px-1">
             {categories.map((category) => (
@@ -51,60 +84,132 @@ const CategoryFilter = ({
               </Button>
             ))}
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className={`shrink-0 h-10 min-h-[44px] gap-1.5 text-xs uppercase tracking-[0.12em] ${showFilters ? "text-primary" : "text-muted-foreground"}`}
-          >
-            <SlidersHorizontal className="w-3.5 h-3.5" />
-            Filters
-          </Button>
+
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="shrink-0 h-10 min-h-[44px] gap-1.5 text-xs uppercase tracking-[0.12em] text-muted-foreground relative"
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[10px] flex items-center justify-center font-bold">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[300px] sm:w-[360px] overflow-y-auto">
+              <SheetHeader className="mb-6">
+                <div className="flex items-center justify-between">
+                  <SheetTitle className="font-display text-lg">Filters & Sort</SheetTitle>
+                  {activeFilterCount > 0 && (
+                    <Button variant="ghost" size="sm" onClick={clearAll} className="text-xs text-muted-foreground h-8">
+                      Clear all
+                    </Button>
+                  )}
+                </div>
+              </SheetHeader>
+
+              <div className="space-y-6">
+                {/* Category */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Category</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map((cat) => (
+                      <Button
+                        key={cat.id}
+                        variant="outline"
+                        size="sm"
+                        className={`h-9 text-xs font-body ${
+                          selectedCategory === cat.id
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "text-muted-foreground"
+                        }`}
+                        onClick={() => { onSelect(cat.id); }}
+                      >
+                        <span className="mr-1">{cat.icon}</span>{cat.name}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Gender</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {genderOptions.map((opt) => (
+                      <Button
+                        key={opt.value}
+                        variant="outline"
+                        size="sm"
+                        className={`h-9 text-xs font-body ${
+                          selectedGender === opt.value
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "text-muted-foreground"
+                        }`}
+                        onClick={() => onGenderChange(opt.value)}
+                      >
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Status */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Status</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {statusOptions.map((opt) => (
+                      <Button
+                        key={opt.value}
+                        variant="outline"
+                        size="sm"
+                        className={`h-9 text-xs font-body ${
+                          selectedStatus === opt.value
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "text-muted-foreground"
+                        }`}
+                        onClick={() => onStatusChange(opt.value)}
+                      >
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Sort */}
+                <div>
+                  <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Sort By</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {sortOptions.map((opt) => (
+                      <Button
+                        key={opt.value}
+                        variant="outline"
+                        size="sm"
+                        className={`h-9 text-xs font-body ${
+                          sortBy === opt.value
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "text-muted-foreground"
+                        }`}
+                        onClick={() => onSortChange(opt.value)}
+                      >
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Product count */}
+                <div className="pt-4 border-t border-border">
+                  <p className="text-sm text-muted-foreground font-body">{productCount} items found</p>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
-
-        {/* Filters row */}
-        {showFilters && (
-          <div className="flex items-center gap-2 mt-3 overflow-x-auto no-scrollbar pb-1">
-            <Select value={selectedGender} onValueChange={onGenderChange}>
-              <SelectTrigger className="h-9 w-[110px] text-xs shrink-0">
-                <SelectValue placeholder="Gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="men">Men</SelectItem>
-                <SelectItem value="women">Women</SelectItem>
-                <SelectItem value="kids">Kids</SelectItem>
-                <SelectItem value="unisex">Unisex</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={selectedStatus} onValueChange={onStatusChange}>
-              <SelectTrigger className="h-9 w-[110px] text-xs shrink-0">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="new">New Arrivals</SelectItem>
-                <SelectItem value="on_sale">On Sale</SelectItem>
-                <SelectItem value="in_stock">In Stock</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={sortBy} onValueChange={onSortChange}>
-              <SelectTrigger className="h-9 w-[130px] text-xs shrink-0">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Newest</SelectItem>
-                <SelectItem value="price_low">Price: Low→High</SelectItem>
-                <SelectItem value="price_high">Price: High→Low</SelectItem>
-                <SelectItem value="name_az">Name: A→Z</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <span className="text-xs text-muted-foreground shrink-0 ml-auto">{productCount} items</span>
-          </div>
-        )}
       </div>
     </section>
   );
