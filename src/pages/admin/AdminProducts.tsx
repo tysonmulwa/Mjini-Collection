@@ -17,7 +17,7 @@ type Product = Tables<"products">;
 const MAX_IMAGES = 5;
 
 const emptyProduct = {
-  name: "", category: "shoes", subcategory: "", price: 0, original_price: 0,
+  name: "", category: "shoes", subcategory: "", shoe_type: "", price: 0, original_price: 0,
   image: "", images: [] as string[], description: "", sizes: [] as string[], colors: [] as string[],
   in_stock: true, is_new: false, on_sale: false,
 };
@@ -56,6 +56,7 @@ const AdminProducts = () => {
     const allImages = existingImages.length > 0 ? existingImages : (p.image ? [p.image] : []);
     setForm({
       name: p.name, category: p.category, subcategory: p.subcategory,
+      shoe_type: (p as any).shoe_type || "",
       price: p.price, original_price: p.original_price, image: p.image,
       images: allImages,
       description: p.description || "", sizes: p.sizes || [], colors: p.colors || [],
@@ -135,6 +136,7 @@ const AdminProducts = () => {
 
     const payload = {
       name: form.name, category: form.category, subcategory: form.subcategory || form.category,
+      shoe_type: form.shoe_type || null,
       price: form.price, original_price: form.original_price || form.price, image: primaryImage,
       images: allImageUrls,
       description: form.description || null, sizes: form.sizes.length ? form.sizes : null,
@@ -238,10 +240,41 @@ const AdminProducts = () => {
                   </div>
                   {form.category && form.subcategory && (
                     <p className="text-xs text-primary font-medium mt-2">
-                      ✓ {form.subcategory === "men" ? "Men's" : form.subcategory === "women" ? "Women's" : form.subcategory === "kids" ? "Kids'" : "Unisex"} {form.category}
+                      ✓ {form.subcategory === "men" ? "Men's" : form.subcategory === "women" ? "Women's" : form.subcategory === "kids" ? "Kids'" : "Unisex"} {form.category}{form.shoe_type ? ` — ${form.shoe_type}` : ""}
                     </p>
                   )}
                 </div>
+
+                {form.category === "shoes" && (
+                  <div>
+                    <Label className="mb-2 block">Shoe Type</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { value: "sneakers", label: "👟 Sneakers" },
+                        { value: "heels", label: "👠 Heels" },
+                        { value: "boots", label: "🥾 Boots" },
+                        { value: "sandals", label: "🩴 Sandals" },
+                        { value: "loafers", label: "👞 Loafers" },
+                        { value: "flats", label: "🥿 Flats" },
+                        { value: "slides", label: "🩰 Slides" },
+                        { value: "formal", label: "👔 Formal" },
+                      ].map((type) => (
+                        <button
+                          key={type.value}
+                          type="button"
+                          onClick={() => setForm({ ...form, shoe_type: form.shoe_type === type.value ? "" : type.value })}
+                          className={`px-4 py-2 rounded-lg border text-sm font-body transition-all ${
+                            form.shoe_type === type.value
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border text-foreground hover:border-primary"
+                          }`}
+                        >
+                          {type.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>Price (KES)</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></div>
                   <div><Label>Original Price</Label><Input type="number" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: +e.target.value })} /></div>
