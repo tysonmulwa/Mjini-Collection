@@ -32,11 +32,11 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
 
       {/* Main nav */}
       <div className="bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="container mx-auto px-4 py-3 md:py-4">
+        <div className="container mx-auto px-4 py-3 md:py-4 bg-secondary">
           <div className="flex-row flex items-center justify-between gap-0 rounded-full">
             {/* Logo — always left */}
             <Link to="/" className="flex items-center gap-2.5 shrink-0 group order-first">
-              <img src={logo} alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 object-cover dark:brightness-110 dark:contrast-105 rounded-full" />
+              <img alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 object-cover dark:brightness-110 dark:contrast-105 rounded-full" src="/lovable-uploads/a503adbb-f9b2-40a1-826a-177612d6ab3e.png" />
               <div className="hidden sm:block">
                 <h1 className="text-lg font-display font-bold text-foreground leading-none tracking-wide text-left my-0 py-0">Mjini Collection </h1>
                 <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-body mt-0.5 my-0">​</p>
