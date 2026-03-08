@@ -14,9 +14,11 @@ import { Textarea } from "@/components/ui/textarea";
 
 type Product = Tables<"products">;
 
+const MAX_IMAGES = 5;
+
 const emptyProduct = {
   name: "", category: "shoes", subcategory: "", price: 0, original_price: 0,
-  image: "", description: "", sizes: [] as string[], colors: [] as string[],
+  image: "", images: [] as string[], description: "", sizes: [] as string[], colors: [] as string[],
   in_stock: true, is_new: false, on_sale: false,
 };
 
@@ -27,8 +29,8 @@ const AdminProducts = () => {
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState(emptyProduct);
   const [saving, setSaving] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageFiles, setImageFiles] = useState<(File | null)[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -40,17 +42,27 @@ const AdminProducts = () => {
 
   useEffect(() => { fetchProducts(); }, []);
 
-  const openCreate = () => { setEditing(null); setForm(emptyProduct); setImageFile(null); setImagePreview(null); setDialogOpen(true); };
+  const openCreate = () => {
+    setEditing(null);
+    setForm(emptyProduct);
+    setImageFiles([]);
+    setImagePreviews([]);
+    setDialogOpen(true);
+  };
+
   const openEdit = (p: Product) => {
     setEditing(p);
+    const existingImages = (p as any).images || [];
+    const allImages = existingImages.length > 0 ? existingImages : (p.image ? [p.image] : []);
     setForm({
       name: p.name, category: p.category, subcategory: p.subcategory,
       price: p.price, original_price: p.original_price, image: p.image,
+      images: allImages,
       description: p.description || "", sizes: p.sizes || [], colors: p.colors || [],
       in_stock: p.in_stock ?? true, is_new: p.is_new ?? false, on_sale: p.on_sale ?? false,
     });
-    setImageFile(null);
-    setImagePreview(p.image);
+    setImageFiles([]);
+    setImagePreviews(allImages);
     setDialogOpen(true);
   };
 
@@ -59,8 +71,30 @@ const AdminProducts = () => {
     if (!file) return;
     if (!file.type.startsWith("image/")) { toast.error("Please select an image file"); return; }
     if (file.size > 5 * 1024 * 1024) { toast.error("Image must be under 5MB"); return; }
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+    if (imagePreviews.length >= MAX_IMAGES) { toast.error(`Maximum ${MAX_IMAGES} images allowed`); return; }
+    setImageFiles(prev => [...prev, file]);
+    setImagePreviews(prev => [...prev, URL.createObjectURL(file)]);
+    // Reset input so same file can be selected again
+    e.target.value = "";
+  };
+
+  const removeImage = (index: number) => {
+    const preview = imagePreviews[index];
+    // Check if this is a new file or existing URL
+    const existingUrls = form.images;
+    const isExisting = existingUrls.includes(preview);
+
+    setImagePreviews(prev => prev.filter((_, i) => i !== index));
+    if (!isExisting) {
+      // Find which file index this corresponds to
+      const newFileIndex = index - existingUrls.filter(url => imagePreviews.slice(0, index).includes(url)).length;
+      setImageFiles(prev => prev.filter((_, i) => i !== newFileIndex));
+    } else {
+      setForm(prev => ({ ...prev, images: prev.images.filter((_, i) => {
+        // Remove the matching URL
+        return prev.images[i] !== preview || imagePreviews.filter((p, pi) => pi < index && p === preview).length > 0;
+      })}));
+    }
   };
 
   const uploadImage = async (file: File): Promise<string | null> => {
@@ -73,20 +107,36 @@ const AdminProducts = () => {
   };
 
   const handleSave = async () => {
-    if (!form.name || (!form.image && !imageFile) || !form.price) { toast.error("Name, image, and price are required"); return; }
+    if (!form.name || (imagePreviews.length === 0 && imageFiles.length === 0) || !form.price) {
+      toast.error("Name, at least one image, and price are required");
+      return;
+    }
     setSaving(true);
 
-    let imageUrl = form.image;
-    if (imageFile) {
+    // Upload new files
+    let allImageUrls: string[] = [];
+    // Keep existing URLs that are still in previews
+    const existingKept = form.images.filter(url => imagePreviews.includes(url));
+    allImageUrls = [...existingKept];
+
+    if (imageFiles.length > 0) {
       setUploading(true);
-      const uploaded = await uploadImage(imageFile);
+      for (const file of imageFiles) {
+        if (file) {
+          const uploaded = await uploadImage(file);
+          if (!uploaded) { setSaving(false); setUploading(false); return; }
+          allImageUrls.push(uploaded);
+        }
+      }
       setUploading(false);
-      if (!uploaded) { setSaving(false); return; }
-      imageUrl = uploaded;
     }
+
+    const primaryImage = allImageUrls[0] || form.image;
+
     const payload = {
       name: form.name, category: form.category, subcategory: form.subcategory || form.category,
-      price: form.price, original_price: form.original_price || form.price, image: imageUrl,
+      price: form.price, original_price: form.original_price || form.price, image: primaryImage,
+      images: allImageUrls,
       description: form.description || null, sizes: form.sizes.length ? form.sizes : null,
       colors: form.colors.length ? form.colors : null,
       in_stock: form.in_stock, is_new: form.is_new, on_sale: form.on_sale,
@@ -154,33 +204,49 @@ const AdminProducts = () => {
                   <div><Label>Price (KES)</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></div>
                   <div><Label>Original Price</Label><Input type="number" value={form.original_price} onChange={(e) => setForm({ ...form, original_price: +e.target.value })} /></div>
                 </div>
+
+                {/* Multi-image upload section */}
                 <div>
-                  <Label>Product Image</Label>
+                  <Label>Product Images ({imagePreviews.length}/{MAX_IMAGES})</Label>
                   <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
                   <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" onChange={handleImageSelect} className="hidden" />
-                  {imagePreview ? (
-                    <div className="relative mt-2 rounded-lg overflow-hidden border border-border bg-muted">
-                      <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover" />
-                      <button
-                        type="button"
-                        onClick={() => { setImageFile(null); setImagePreview(null); setForm({ ...form, image: "" }); }}
-                        className="absolute top-2 right-2 bg-background/80 backdrop-blur-sm rounded-full p-1 hover:bg-destructive hover:text-destructive-foreground transition-colors"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
+
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2 mt-2">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative rounded-lg overflow-hidden border border-border bg-muted aspect-square">
+                          <img src={preview} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
+                          {index === 0 && (
+                            <span className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded font-medium">
+                              Main
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute top-1 right-1 bg-background/80 backdrop-blur-sm rounded-full p-1 hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ) : (
+                  )}
+
+                  {imagePreviews.length < MAX_IMAGES && (
                     <div className="mt-2 flex gap-2">
                       <Button type="button" variant="outline" className="flex-1" onClick={() => fileInputRef.current?.click()}>
-                        <Upload className="w-4 h-4 mr-2" /> Choose File
+                        <Upload className="w-4 h-4 mr-2" /> {imagePreviews.length === 0 ? "Choose File" : "Add More"}
                       </Button>
                       <Button type="button" variant="outline" className="flex-1" onClick={() => cameraInputRef.current?.click()}>
                         <Camera className="w-4 h-4 mr-2" /> Take Photo
                       </Button>
                     </div>
                   )}
-                  {uploading && <p className="text-xs text-muted-foreground mt-1">Uploading image...</p>}
+                  {uploading && <p className="text-xs text-muted-foreground mt-1">Uploading images...</p>}
+                  <p className="text-xs text-muted-foreground mt-1">First image will be the main product photo. Up to {MAX_IMAGES} images.</p>
                 </div>
+
                 <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} /></div>
                 <div>
                   <Label>Sizes</Label>
@@ -188,104 +254,49 @@ const AdminProducts = () => {
                     <div className="flex flex-wrap gap-2 mt-2">
                       {["35", "36", "37", "38", "39", "40", "41", "42", "43", "44"].map((s) => (
                         <button
-                          key={s}
-                          type="button"
-                          onClick={() => {
-                            setForm((prev) => ({
-                              ...prev,
-                              sizes: prev.sizes.includes(s)
-                                ? prev.sizes.filter((x) => x !== s)
-                                : [...prev.sizes, s],
-                            }));
-                          }}
-                          className={`px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${
-                            form.sizes.includes(s)
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border text-foreground hover:border-primary"
-                          }`}
-                        >
-                          {s}
-                        </button>
+                          key={s} type="button"
+                          onClick={() => setForm((prev) => ({ ...prev, sizes: prev.sizes.includes(s) ? prev.sizes.filter((x) => x !== s) : [...prev.sizes, s] }))}
+                          className={`px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${form.sizes.includes(s) ? "border-primary bg-primary text-primary-foreground" : "border-border text-foreground hover:border-primary"}`}
+                        >{s}</button>
                       ))}
                     </div>
                   ) : (
                     <div className="flex flex-wrap gap-2 mt-2">
                       {["S", "M", "L", "XL", "One Size"].map((s) => (
                         <button
-                          key={s}
-                          type="button"
-                          onClick={() => {
-                            setForm((prev) => ({
-                              ...prev,
-                              sizes: prev.sizes.includes(s)
-                                ? prev.sizes.filter((x) => x !== s)
-                                : [...prev.sizes, s],
-                            }));
-                          }}
-                          className={`px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${
-                            form.sizes.includes(s)
-                              ? "border-primary bg-primary text-primary-foreground"
-                              : "border-border text-foreground hover:border-primary"
-                          }`}
-                        >
-                          {s}
-                        </button>
+                          key={s} type="button"
+                          onClick={() => setForm((prev) => ({ ...prev, sizes: prev.sizes.includes(s) ? prev.sizes.filter((x) => x !== s) : [...prev.sizes, s] }))}
+                          className={`px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${form.sizes.includes(s) ? "border-primary bg-primary text-primary-foreground" : "border-border text-foreground hover:border-primary"}`}
+                        >{s}</button>
                       ))}
                     </div>
                   )}
-                  {form.sizes.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.sizes.join(", ")}</p>
-                  )}
+                  {form.sizes.length > 0 && <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.sizes.join(", ")}</p>}
                 </div>
                 <div>
                   <Label>Colors</Label>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {[
-                      { name: "Black", hex: "#000000" },
-                      { name: "White", hex: "#FFFFFF" },
-                      { name: "Red", hex: "#EF4444" },
-                      { name: "Pink", hex: "#EC4899" },
-                      { name: "Blue", hex: "#3B82F6" },
-                      { name: "Navy", hex: "#1E3A5F" },
-                      { name: "Brown", hex: "#92400E" },
-                      { name: "Tan", hex: "#D2B48C" },
-                      { name: "Beige", hex: "#F5F5DC" },
-                      { name: "Gold", hex: "#D4AF37" },
-                      { name: "Silver", hex: "#C0C0C0" },
-                      { name: "Green", hex: "#22C55E" },
-                      { name: "Purple", hex: "#A855F7" },
-                      { name: "Orange", hex: "#F97316" },
-                      { name: "Nude", hex: "#E8C4A0" },
-                      { name: "Maroon", hex: "#800000" },
+                      { name: "Black", hex: "#000000" }, { name: "White", hex: "#FFFFFF" },
+                      { name: "Red", hex: "#EF4444" }, { name: "Pink", hex: "#EC4899" },
+                      { name: "Blue", hex: "#3B82F6" }, { name: "Navy", hex: "#1E3A5F" },
+                      { name: "Brown", hex: "#92400E" }, { name: "Tan", hex: "#D2B48C" },
+                      { name: "Beige", hex: "#F5F5DC" }, { name: "Gold", hex: "#D4AF37" },
+                      { name: "Silver", hex: "#C0C0C0" }, { name: "Green", hex: "#22C55E" },
+                      { name: "Purple", hex: "#A855F7" }, { name: "Orange", hex: "#F97316" },
+                      { name: "Nude", hex: "#E8C4A0" }, { name: "Maroon", hex: "#800000" },
                     ].map((c) => (
                       <button
-                        key={c.name}
-                        type="button"
-                        onClick={() => {
-                          setForm((prev) => ({
-                            ...prev,
-                            colors: prev.colors.includes(c.name)
-                              ? prev.colors.filter((x) => x !== c.name)
-                              : [...prev.colors, c.name],
-                          }));
-                        }}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${
-                          form.colors.includes(c.name)
-                            ? "border-primary bg-primary/10 text-foreground ring-1 ring-primary"
-                            : "border-border text-muted-foreground hover:border-primary"
-                        }`}
+                        key={c.name} type="button"
+                        onClick={() => setForm((prev) => ({ ...prev, colors: prev.colors.includes(c.name) ? prev.colors.filter((x) => x !== c.name) : [...prev.colors, c.name] }))}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm font-body transition-all ${form.colors.includes(c.name) ? "border-primary bg-primary/10 text-foreground ring-1 ring-primary" : "border-border text-muted-foreground hover:border-primary"}`}
                       >
-                        <span
-                          className="w-4 h-4 rounded-full shrink-0 border border-border"
-                          style={{ backgroundColor: c.hex }}
-                        />
+                        <span className="w-4 h-4 rounded-full shrink-0 border border-border" style={{ backgroundColor: c.hex }} />
                         {c.name}
                       </button>
                     ))}
                   </div>
-                  {form.colors.length > 0 && (
-                    <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.colors.join(", ")}</p>
-                  )}
+                  {form.colors.length > 0 && <p className="text-xs text-muted-foreground mt-1.5">Selected: {form.colors.join(", ")}</p>}
                 </div>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={form.in_stock} onChange={(e) => setForm({ ...form, in_stock: e.target.checked })} /> In Stock</label>
@@ -318,7 +329,12 @@ const AdminProducts = () => {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <img src={p.image} alt={p.name} className="w-10 h-10 rounded-lg object-cover bg-muted" />
-                    <span className="font-medium text-foreground text-sm line-clamp-1">{p.name}</span>
+                    <div>
+                      <span className="font-medium text-foreground text-sm line-clamp-1">{p.name}</span>
+                      {(p as any).images?.length > 1 && (
+                        <span className="text-xs text-muted-foreground">{(p as any).images.length} photos</span>
+                      )}
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell capitalize text-muted-foreground text-sm">{p.category}</TableCell>
