@@ -66,6 +66,7 @@ const App = () => (
           <CartProvider>
             <WishlistProvider>
               <AnimatedRoutes />
+              <WhatsAppFloat />
             </WishlistProvider>
           </CartProvider>
         </AuthProvider>
