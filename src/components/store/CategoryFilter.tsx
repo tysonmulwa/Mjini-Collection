@@ -20,6 +20,8 @@ interface CategoryFilterProps {
   onGenderChange: (value: string) => void;
   selectedStatus: string;
   onStatusChange: (value: string) => void;
+  selectedShoeType: string;
+  onShoeTypeChange: (value: string) => void;
 }
 
 const genderOptions = [
@@ -44,21 +46,36 @@ const sortOptions = [
   { value: "name_az", label: "Name: A → Z" },
 ];
 
+const shoeTypeOptions = [
+  { value: "all", label: "All" },
+  { value: "sneakers", label: "👟 Sneakers" },
+  { value: "heels", label: "👠 Heels" },
+  { value: "boots", label: "🥾 Boots" },
+  { value: "sandals", label: "🩴 Sandals" },
+  { value: "loafers", label: "👞 Loafers" },
+  { value: "flats", label: "🥿 Flats" },
+  { value: "slides", label: "🩰 Slides" },
+  { value: "formal", label: "👔 Formal" },
+];
+
 const CategoryFilter = ({
   categories, selectedCategory, onSelect, productCount,
-  sortBy, onSortChange, selectedGender, onGenderChange, selectedStatus, onStatusChange
+  sortBy, onSortChange, selectedGender, onGenderChange, selectedStatus, onStatusChange,
+  selectedShoeType, onShoeTypeChange
 }: CategoryFilterProps) => {
   const [open, setOpen] = useState(false);
 
   const activeFilterCount = [
     selectedGender !== "all" ? 1 : 0,
     selectedStatus !== "all" ? 1 : 0,
+    selectedShoeType !== "all" ? 1 : 0,
     sortBy !== "newest" ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
   const clearAll = () => {
     onGenderChange("all");
     onStatusChange("all");
+    onShoeTypeChange("all");
     onSortChange("newest");
   };
 
@@ -157,6 +174,30 @@ const CategoryFilter = ({
                     ))}
                   </div>
                 </div>
+
+                {/* Shoe Type */}
+                {(selectedCategory === "all" || selectedCategory === "shoes" || selectedCategory === "men-shoes") && (
+                  <div>
+                    <h4 className="text-xs uppercase tracking-[0.15em] text-muted-foreground font-body font-semibold mb-3">Shoe Type</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {shoeTypeOptions.map((opt) => (
+                        <Button
+                          key={opt.value}
+                          variant="outline"
+                          size="sm"
+                          className={`h-9 text-xs font-body ${
+                            selectedShoeType === opt.value
+                              ? "bg-primary text-primary-foreground border-primary"
+                              : "text-muted-foreground"
+                          }`}
+                          onClick={() => onShoeTypeChange(opt.value)}
+                        >
+                          {opt.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Status */}
                 <div>

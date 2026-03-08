@@ -24,6 +24,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedGender, setSelectedGender] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedShoeType, setSelectedShoeType] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,10 +62,16 @@ const Index = () => {
       else if (selectedStatus === "on_sale") matchesStatus = product.on_sale === true;
       else if (selectedStatus === "in_stock") matchesStatus = product.in_stock === true;
 
+      // Shoe type filter
+      let matchesShoeType = true;
+      if (selectedShoeType !== "all") {
+        matchesShoeType = (product as any).shoe_type === selectedShoeType;
+      }
+
       // Search
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchesCategory && matchesGender && matchesStatus && matchesSearch;
+      return matchesCategory && matchesGender && matchesStatus && matchesShoeType && matchesSearch;
     })
     .sort((a, b) => {
       switch (sortBy) {
@@ -146,6 +153,8 @@ const Index = () => {
           onGenderChange={setSelectedGender}
           selectedStatus={selectedStatus}
           onStatusChange={setSelectedStatus}
+          selectedShoeType={selectedShoeType}
+          onShoeTypeChange={setSelectedShoeType}
         />
 
         <section className="py-10 md:py-24">
