@@ -24,6 +24,7 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedGender, setSelectedGender] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedShoeType, setSelectedShoeType] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [products, setProducts] = useState<Tables<"products">[]>([]);
   const [loading, setLoading] = useState(true);
