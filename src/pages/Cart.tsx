@@ -93,6 +93,7 @@ const Cart = () => {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 };
 
