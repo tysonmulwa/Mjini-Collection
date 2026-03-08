@@ -34,16 +34,9 @@ const ProductDetail = () => {
       if (data.sizes?.length) setSelectedSize(data.sizes[0]);
       if (data.colors?.length) setSelectedColor(data.colors[0]);
 
-      // Load gallery images from storage
-      const { data: files } = await supabase.storage
-        .from("product-images")
-        .list(`${id}`, { limit: 10, sortBy: { column: "name", order: "asc" } });
-
-      if (files && files.length > 0) {
-        const urls = files
-          .filter(f => !f.name.startsWith("."))
-          .map(f => supabase.storage.from("product-images").getPublicUrl(`${id}/${f.name}`).data.publicUrl);
-        setImages([data.image, ...urls]);
+      // Use images from the database column
+      if (data.images && data.images.length > 0) {
+        setImages(data.images);
       } else {
         setImages([data.image]);
       }
