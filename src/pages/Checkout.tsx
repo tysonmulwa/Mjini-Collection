@@ -259,6 +259,7 @@ const Checkout = () => {
         </form>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

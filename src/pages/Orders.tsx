@@ -178,6 +178,7 @@ const Orders = () => {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 };
 
