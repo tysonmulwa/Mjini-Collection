@@ -46,9 +46,22 @@ const sortOptions = [
   { value: "name_az", label: "Name: A → Z" },
 ];
 
+const shoeTypeOptions = [
+  { value: "all", label: "All" },
+  { value: "sneakers", label: "👟 Sneakers" },
+  { value: "heels", label: "👠 Heels" },
+  { value: "boots", label: "🥾 Boots" },
+  { value: "sandals", label: "🩴 Sandals" },
+  { value: "loafers", label: "👞 Loafers" },
+  { value: "flats", label: "🥿 Flats" },
+  { value: "slides", label: "🩰 Slides" },
+  { value: "formal", label: "👔 Formal" },
+];
+
 const CategoryFilter = ({
   categories, selectedCategory, onSelect, productCount,
-  sortBy, onSortChange, selectedGender, onGenderChange, selectedStatus, onStatusChange
+  sortBy, onSortChange, selectedGender, onGenderChange, selectedStatus, onStatusChange,
+  selectedShoeType, onShoeTypeChange
 }: CategoryFilterProps) => {
   const [open, setOpen] = useState(false);
 
