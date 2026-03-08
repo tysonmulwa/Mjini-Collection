@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PageTransition from "@/components/store/PageTransition";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ const Signup = () => {
   };
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8 font-body">
@@ -70,6 +72,7 @@ const Signup = () => {
         </p>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
