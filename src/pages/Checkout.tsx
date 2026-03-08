@@ -15,6 +15,7 @@ const Checkout = () => {
   const { user } = useAuth();
   const { items, total, clearCart } = useCart();
   const navigate = useNavigate();
+  const { getDeliveryFee, loading: feeLoading } = useDeliveryFee();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [whatsappLink, setWhatsappLink] = useState("");
