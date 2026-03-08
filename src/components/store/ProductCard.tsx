@@ -85,7 +85,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <Button
               onClick={handleAddToCart}
               disabled={!product.in_stock}
-              className="w-full gradient-brand text-primary-foreground rounded-none font-body font-semibold text-xs tracking-wider uppercase h-10">
+              className="w-full gradient-brand text-primary-foreground font-body font-semibold text-xs tracking-wider uppercase h-10 rounded-3xl">
               
               <ShoppingBag className="w-4 h-4 mr-2" />
               {product.in_stock ? "Add to Bag" : "Sold Out"}
@@ -119,7 +119,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <div className="flex items-baseline gap-2">
             <span className="text-sm md:text-base font-display font-bold text-card-foreground">{formatPrice(product.price)}</span>
             {product.on_sale &&
-            <span className="text-[10px] md:text-xs text-muted-foreground line-through font-body">{formatPrice(product.original_price)}</span>
+            <span className="text-[10px] md:text-xs line-through font-body font-bold text-[#ff0000]">{formatPrice(product.original_price)}</span>
             }
           </div>
 
@@ -128,7 +128,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
             onClick={handleAddToCart}
             disabled={!product.in_stock}
             size="sm"
-            className="w-full mt-2.5 md:hidden gradient-brand text-primary-foreground rounded-none font-body font-semibold text-[11px] tracking-wider uppercase h-9 min-h-[40px]">
+            className="w-full mt-2.5 md:hidden gradient-brand text-primary-foreground font-body font-semibold text-[11px] tracking-wider uppercase h-9 min-h-[40px] rounded-full">
             
             <ShoppingBag className="w-3.5 h-3.5 mr-1.5" />
             {product.in_stock ? "Add to Bag" : "Sold Out"}
