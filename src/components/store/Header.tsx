@@ -25,7 +25,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
       {/* Top bar */}
       <div className="text-[10px] py-1.5 md:py-2 border-b border-border/10 bg-secondary text-primary">
         <div className="container mx-auto px-4 flex-row flex items-start justify-between">
-          <span className="font-body tracking-[0.1em] uppercase truncate font-serif font-bold text-center">Free delivery in Nairobi over KES 3,000</span>
+          <span className="font-body tracking-[0.1em] uppercase truncate font-serif font-bold text-center">   Free delivery in Nairobi for orders over KES 3,000</span>
           <a href="tel:+254703739265" className="hidden sm:block font-body tracking-[0.1em] hover:text-primary transition-colors">+254 703 739 265</a>
         </div>
       </div>
@@ -68,12 +68,6 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
               </Button>
 
               <ThemeToggle />
-
-              <Link to="/wishlist">
-                <Button variant="ghost" size="icon" className="relative h-10 w-10 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-primary transition-colors">
-                  <Heart className="w-5 h-5" />
-                </Button>
-              </Link>
 
               <Link to="/cart">
                 <Button variant="ghost" size="icon" className="relative h-10 w-10 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-primary transition-colors">
