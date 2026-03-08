@@ -327,7 +327,7 @@ const AdminProducts = () => {
                   <Label>Sizes</Label>
                   {form.category === "shoes" ? (
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {["35", "36", "37", "38", "39", "40", "41", "42", "43", "44"].map((s) => (
+                      {["20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46"].map((s) => (
                         <button
                           key={s} type="button"
                           onClick={() => setForm((prev) => ({ ...prev, sizes: prev.sizes.includes(s) ? prev.sizes.filter((x) => x !== s) : [...prev.sizes, s] }))}
