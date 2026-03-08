@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
+import { useStoreSettings } from "@/hooks/useStoreSettings";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface HeaderProps {
