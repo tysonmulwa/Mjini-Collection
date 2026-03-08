@@ -72,6 +72,7 @@ const Signup = () => {
         </p>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

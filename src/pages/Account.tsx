@@ -123,6 +123,7 @@ const Account = () => {
         )}
       </div>
     </div>
+    </PageTransition>
   );
 };
 
