@@ -187,30 +187,60 @@ const AdminProducts = () => {
               </DialogHeader>
               <div className="space-y-4 mt-2">
                 <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Category</Label>
-                    <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="shoes">Shoes</SelectItem>
-                        <SelectItem value="beauty">Beauty</SelectItem>
-                        <SelectItem value="accessories">Accessories</SelectItem>
-                      </SelectContent>
-                    </Select>
+                
+                {/* Smart Category & Subcategory Selection */}
+                <div>
+                  <Label className="mb-2 block">Category</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "shoes", label: "👠 Shoes" },
+                      { value: "beauty", label: "💄 Beauty" },
+                      { value: "accessories", label: "👜 Accessories" },
+                    ].map((cat) => (
+                      <button
+                        key={cat.value}
+                        type="button"
+                        onClick={() => setForm({ ...form, category: cat.value, subcategory: "" })}
+                        className={`px-4 py-2 rounded-lg border text-sm font-body transition-all ${
+                          form.category === cat.value
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border text-foreground hover:border-primary"
+                        }`}
+                      >
+                        {cat.label}
+                      </button>
+                    ))}
                   </div>
-                  <div>
-                    <Label>Subcategory</Label>
-                    <Select value={form.subcategory || ""} onValueChange={(v) => setForm({ ...form, subcategory: v })}>
-                      <SelectTrigger><SelectValue placeholder="Select..." /></SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="women">Women</SelectItem>
-                        <SelectItem value="men">Men</SelectItem>
-                        <SelectItem value="kids">Kids</SelectItem>
-                        <SelectItem value="unisex">Unisex</SelectItem>
-                      </SelectContent>
-                    </Select>
+                </div>
+
+                <div>
+                  <Label className="mb-2 block">Who is it for?</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: "men", label: "👨 Men" },
+                      { value: "women", label: "👩 Women" },
+                      { value: "kids", label: "🧒 Kids" },
+                      { value: "unisex", label: "🌟 Unisex" },
+                    ].map((sub) => (
+                      <button
+                        key={sub.value}
+                        type="button"
+                        onClick={() => setForm({ ...form, subcategory: sub.value })}
+                        className={`px-4 py-2 rounded-lg border text-sm font-body transition-all ${
+                          form.subcategory === sub.value
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-border text-foreground hover:border-primary"
+                        }`}
+                      >
+                        {sub.label}
+                      </button>
+                    ))}
                   </div>
+                  {form.category && form.subcategory && (
+                    <p className="text-xs text-primary font-medium mt-2">
+                      ✓ {form.subcategory === "men" ? "Men's" : form.subcategory === "women" ? "Women's" : form.subcategory === "kids" ? "Kids'" : "Unisex"} {form.category}
+                    </p>
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div><Label>Price (KES)</Label><Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></div>
