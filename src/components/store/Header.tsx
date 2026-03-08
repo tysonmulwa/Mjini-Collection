@@ -23,10 +23,10 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-50">
       {/* Top bar */}
-      <div className="text-[10px] py-1.5 md:py-2 border-b border-border/10 bg-secondary text-foreground">
+      <div className="text-[10px] py-1.5 md:py-2 border-b border-border/10 bg-secondary text-primary">
         <div className="container mx-auto px-4 flex-row flex items-start justify-between">
           <span className="font-body tracking-[0.1em] uppercase truncate font-serif font-bold text-center">Free delivery in Nairobi over KES 3,000</span>
-          <a href="tel:+254703739265" className="hidden sm:block font-body tracking-[0.1em] hover:text-foreground transition-colors">+254 703 739 265</a>
+          <a href="tel:+254703739265" className="hidden sm:block font-body tracking-[0.1em] hover:text-primary transition-colors">+254 703 739 265</a>
         </div>
       </div>
 
