@@ -54,7 +54,7 @@ const Index = () => {
       <div className="min-h-screen bg-background">
         <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
 
-        {/* Hero Section */}
+        {/* Hero Section — mobile-optimized */}
         {loading ? (
           <HeroSkeleton />
         ) : (
@@ -62,17 +62,25 @@ const Index = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="py-16 md:py-20 border-b border-border/30"
+            className="py-10 md:py-20 border-b border-border/30"
           >
             <div className="container mx-auto px-4 text-center">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-                className="text-4xl md:text-5xl font-display font-bold text-foreground mb-8"
+                className="text-3xl md:text-5xl font-display font-bold text-foreground mb-4 md:mb-8 leading-tight"
               >
                 Curated Fashion & Beauty
               </motion.h1>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+                className="text-sm text-muted-foreground font-body mb-6 md:mb-8 max-w-md mx-auto"
+              >
+                Premium ladies' shoes & beauty products — delivered across Kenya
+              </motion.p>
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -81,13 +89,13 @@ const Index = () => {
               >
                 <button
                   onClick={() => setSelectedCategory("shoes")}
-                  className="px-6 py-2.5 bg-primary text-primary-foreground font-body text-sm font-semibold rounded-none hover:opacity-80 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                  className="px-6 py-3 min-h-[44px] bg-primary text-primary-foreground font-body text-sm font-semibold rounded-none hover:opacity-80 transition-all duration-300 active:scale-[0.97]"
                 >
                   Shop Shoes
                 </button>
                 <button
                   onClick={() => setSelectedCategory("beauty")}
-                  className="px-6 py-2.5 bg-transparent border border-primary text-primary font-body text-sm font-semibold rounded-none hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                  className="px-6 py-3 min-h-[44px] bg-transparent border border-primary text-primary font-body text-sm font-semibold rounded-none hover:bg-primary hover:text-primary-foreground transition-all duration-300 active:scale-[0.97]"
                 >
                   Beauty Products
                 </button>
@@ -99,18 +107,18 @@ const Index = () => {
         <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelect={setSelectedCategory} productCount={filteredProducts.length} />
 
         {/* Products Section */}
-        <section className="py-16 md:py-24">
+        <section className="py-10 md:py-24">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4 }}
-              className="text-center mb-12"
+              className="text-center mb-8 md:mb-12"
             >
-              <div className="w-12 h-px bg-primary mx-auto mb-6" />
-              <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body font-medium mb-3">Our Collection</p>
-              <h2 className="text-2xl md:text-4xl font-display font-bold text-foreground">
+              <div className="w-12 h-px bg-primary mx-auto mb-4 md:mb-6" />
+              <p className="text-[10px] uppercase tracking-[0.3em] text-primary font-body font-medium mb-2 md:mb-3">Our Collection</p>
+              <h2 className="text-xl md:text-4xl font-display font-bold text-foreground">
                 Trending <span className="italic text-primary">Now</span>
               </h2>
             </motion.div>
@@ -123,7 +131,7 @@ const Index = () => {
                 initial="hidden"
                 whileInView="show"
                 viewport={{ once: true, margin: "-50px" }}
-                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6"
               >
                 {filteredProducts.map((product) => (
                   <motion.div key={product.id} variants={fadeUp}>
@@ -138,7 +146,7 @@ const Index = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.3 }}
-                className="text-center py-20"
+                className="text-center py-16 md:py-20"
               >
                 <div className="w-14 h-14 border border-border flex items-center justify-center mx-auto mb-4">
                   <span className="text-xl">🔍</span>
