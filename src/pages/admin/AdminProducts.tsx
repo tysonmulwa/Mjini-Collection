@@ -56,6 +56,7 @@ const AdminProducts = () => {
     const allImages = existingImages.length > 0 ? existingImages : (p.image ? [p.image] : []);
     setForm({
       name: p.name, category: p.category, subcategory: p.subcategory,
+      shoe_type: (p as any).shoe_type || "",
       price: p.price, original_price: p.original_price, image: p.image,
       images: allImages,
       description: p.description || "", sizes: p.sizes || [], colors: p.colors || [],
