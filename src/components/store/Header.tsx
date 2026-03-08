@@ -23,8 +23,8 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
   return (
     <header className="sticky top-0 z-50">
       {/* Top bar */}
-      <div className="bg-accent text-accent-foreground/60 text-[10px] py-1.5 md:py-2 border-b border-border/10">
-        <div className="container mx-auto px-4 flex items-center justify-between">
+      <div className="text-[10px] py-1.5 md:py-2 border-b border-border/10 bg-secondary text-primary">
+        <div className="container mx-auto px-4 flex-row flex items-start justify-between">
           <span className="font-body tracking-[0.1em] uppercase truncate font-serif font-bold text-center">Free delivery in Nairobi over KES 3,000</span>
           <a href="tel:+254703739265" className="hidden sm:block font-body tracking-[0.1em] hover:text-primary transition-colors">+254 703 739 265</a>
         </div>
@@ -36,9 +36,9 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
           <div className="flex-row flex items-center justify-between gap-0 rounded-full">
             {/* Logo — always left */}
             <Link to="/" className="flex items-center gap-2.5 shrink-0 group order-first">
-              <img alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 object-cover dark:brightness-110 dark:contrast-105 rounded-full" src="/lovable-uploads/d4616573-83a0-4261-bead-c55f80c3751a.jpg" />
+              <img alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 dark:brightness-110 dark:contrast-105 rounded-full object-cover" src="/lovable-uploads/d4616573-83a0-4261-bead-c55f80c3751a.jpg" />
               <div className="hidden sm:block">
-                <h1 className="text-lg font-display font-bold text-foreground leading-none tracking-wide text-left my-0 py-0">Mjini Collection </h1>
+                <h1 className="text-lg font-display font-bold text-foreground leading-none tracking-wide my-0 py-0 text-center">Mjini Collection </h1>
                 <p className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-body mt-0.5 my-0">​</p>
               </div>
             </Link>
