@@ -20,6 +20,8 @@ interface CategoryFilterProps {
   onGenderChange: (value: string) => void;
   selectedStatus: string;
   onStatusChange: (value: string) => void;
+  selectedShoeType: string;
+  onShoeTypeChange: (value: string) => void;
 }
 
 const genderOptions = [
