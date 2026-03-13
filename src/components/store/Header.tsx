@@ -42,7 +42,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
           <div className="flex-row flex items-center justify-between gap-0 rounded-full">
             {/* Logo — always left */}
             <Link to="/" className="flex items-center gap-2.5 shrink-0 group order-first">
-              <img alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 dark:brightness-110 dark:contrast-105 rounded-full object-cover" src="/lovable-uploads/d4616573-83a0-4261-bead-c55f80c3751a.jpg" />
+              <img alt="Mjini Collections" className="w-9 h-9 md:w-10 md:h-10 dark:brightness-110 dark:contrast-105 rounded-full object-cover" src="/brand-assets/d4616573-83a0-4261-bead-c55f80c3751a.jpg" />
               <div>
                 <h1 className="text-lg font-display font-bold text-foreground leading-none tracking-wide my-0 py-0 text-center">Mjini Collection </h1>
                 <p className="hidden sm:block text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-body mt-0.5 my-0">​</p>
