@@ -26,6 +26,43 @@ const NotificationBell = () => {
   const [open, setOpen] = useState(false);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const initialLoadRef = useRef(true);
+
+  // Create a short notification sound using Web Audio API
+  const playNotificationSound = useCallback(() => {
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+      oscillator.frequency.setValueAtTime(1046, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.3);
+    } catch (e) {
+      // Audio not available
+    }
+  }, []);
+
+  // Request browser notification permission on mount
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  const showBrowserNotification = useCallback((title: string, body: string) => {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, {
+        body,
+        icon: "/brand-assets/d4616573-83a0-4261-bead-c55f80c3751a.jpg",
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (!user) return;
@@ -38,6 +75,7 @@ const NotificationBell = () => {
         .order("created_at", { ascending: false })
         .limit(20);
       if (data) setNotifications(data as Notification[]);
+      initialLoadRef.current = false;
     };
 
     fetchNotifications();
@@ -53,7 +91,14 @@ const NotificationBell = () => {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 20));
+          const newNotif = payload.new as Notification;
+          setNotifications((prev) => [newNotif, ...prev].slice(0, 20));
+
+          if (!initialLoadRef.current) {
+            playNotificationSound();
+            showBrowserNotification(newNotif.title, newNotif.message);
+            toast.info(newNotif.title, { description: newNotif.message });
+          }
         }
       )
       .subscribe();
