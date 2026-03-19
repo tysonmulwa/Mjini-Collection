@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, Heart, Menu, User, X, LogOut, Package, UserCircle } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 import ThemeToggle from "./ThemeToggle";
 import logo from "@/assets/logo.jpeg";
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 <Search className="w-4 h-4" />
               </Button>
 
-              <ThemeToggle />
+              <NotificationBell />
 
               <Link to="/cart">
                 <Button variant="ghost" size="icon" className="relative h-10 w-10 min-h-[44px] min-w-[44px] text-muted-foreground hover:text-primary transition-colors">
