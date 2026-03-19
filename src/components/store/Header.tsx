@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, ShoppingCart, Heart, Menu, User, X, LogOut, Package, UserCircle } from "lucide-react";
+import NotificationBell from "./NotificationBell";
 import ThemeToggle from "./ThemeToggle";
 import logo from "@/assets/logo.jpeg";
 import { Button } from "@/components/ui/button";
