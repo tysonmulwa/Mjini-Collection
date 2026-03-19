@@ -74,6 +74,7 @@ const Header = ({ searchQuery, onSearchChange }: HeaderProps) => {
                 <Search className="w-4 h-4" />
               </Button>
 
+              <ThemeToggle />
               <NotificationBell />
 
               <Link to="/cart">
